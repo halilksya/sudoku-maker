@@ -15,6 +15,7 @@
                     <Setter Property="BorderThickness" Value="1"/>
                     <Setter Property="BorderBrush" Value="Gray"/>
                     <Setter Property="CornerRadius" Value="5"/>
+                    <Setter Property="RenderTransform" Value="scale(1.11)"></Setter>
                 </Style>
                 <Style Selector="Label">
                     <Setter Property="FontSize" Value="18"/>
@@ -25,9 +26,9 @@
             <Border CornerRadius="10" ClipToBounds="True" Background="White" Width="200" Height="200">
                 <Grid HorizontalAlignment="Center" VerticalAlignment="Center" RowDefinitions="Auto,Auto,Auto, Auto" >
                     <Label Grid.Row="0" Content="Sudoku Maker" HorizontalAlignment="Center" Padding="10"> </Label>
-                    <Button Grid.Row="1" Content="Create New Sudoku" HorizontalAlignment="Center" Margin="7,7,7,7" Width="150" HorizontalContentAlignment="Center" > </Button>
-                    <Button Grid.Row="2" Content="Continue Sudoku" HorizontalAlignment="Center" Margin="7,7,7,7" Width="150" HorizontalContentAlignment="Center"> </Button>
-                    <Button Grid.Row="3" Content="Exit" HorizontalAlignment="Center" Margin="7,7,7,7" Width="150" HorizontalContentAlignment="Center"> </Button>
+                    <Button Grid.Row="1" Click="Create_New_Sudoku_Button_Click" Content="Create New Sudoku" HorizontalAlignment="Center" Margin="7,7,7,7" Width="150" HorizontalContentAlignment="Center" > </Button>
+                    <Button Grid.Row="2" Click="Continue_Sudoku_Button_Click" Content="Continue Sudoku" HorizontalAlignment="Center" Margin="7,7,7,7" Width="150" HorizontalContentAlignment="Center"> </Button>
+                    <Button Grid.Row="3" Click="Exit_Button_Click" Content="Exit" HorizontalAlignment="Center" Margin="7,7,7,7" Width="150" HorizontalContentAlignment="Center"> </Button>
                 </Grid>
             </Border>
         </Grid>
