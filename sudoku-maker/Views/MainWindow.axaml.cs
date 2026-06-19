@@ -10,10 +10,6 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
-    private void Button_SizeChanged(object? sender, SizeChangedEventArgs e)
-    {
-    }
-
     private void Create_New_Sudoku_Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         Content = new SudokuView();
@@ -21,7 +17,7 @@ public partial class MainWindow : Window
 
     private void Continue_Sudoku_Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        // Implement functionality to continue a saved Sudoku game
+        Content = new SudokuView();
     }
 
     private void Exit_Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

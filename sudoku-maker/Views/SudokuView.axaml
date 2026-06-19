@@ -10,16 +10,6 @@
              x:DataType="vm:SudokuViewModel">
 
     <UserControl.Styles>
-        <Style Selector="Button.toolbar">
-            <Setter Property="Background" Value="LightBlue"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Padding" Value="8,5"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="Gray"/>
-            <Setter Property="CornerRadius" Value="10"/>
-        </Style>
-
         <Style Selector="Border.cell-frame">
             <Setter Property="Background" Value="White"/>
             <Setter Property="BorderBrush" Value="#111827"/>
@@ -37,15 +27,24 @@
         </Style>
     </UserControl.Styles>
 
-    <Grid RowDefinitions="60,*" Background="LightGray">
+    <Grid RowDefinitions="60,*" Background="#D3D3D3">
         <Border Grid.Row="0" Background="LightGray">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10" Spacing="8">
-                <Button Classes="toolbar" Content="Back"/>
-                <Button Classes="toolbar" Content="Save"/>
-                <Button Classes="toolbar" Content="Load"/>
-                <Button Classes="toolbar" Content="New"/>
-                <TextBlock Text="Sudoku Maker" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="18,0,0,0"/>
-                <TextBlock Text="Süre: 00:00" FontSize="18" VerticalAlignment="Center" Margin="24,0,0,0"/>
+                <Button Width="40" Height="40" Padding="0" Click="Back_Button_Click">
+                  <Image Source="{SvgImage /Assets/Images/Back_Button.svg}"/>
+                </Button>
+                <Button Width="40" Height="40" Padding="0">
+                  <Image Source="{SvgImage /Assets/Images/Save_Button.svg}"/>
+                </Button>
+                <Button Width="40" Height="40" Padding="0">
+                  <Image Source="{SvgImage /Assets/Images/Import_Button.svg}"/>
+                </Button>
+                <Button Width="40" Height="40" Padding="0" Click="New_Button_Click">
+                  <Image Source="{SvgImage /Assets/Images/New_Button.svg}"/>
+                </Button>
+                <TextBlock Text="Sudoku Maker" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="18,0,40,0"/>
+                <Image Source="{SvgImage /Assets/Images/Clock.svg}" Width="40" Height="40"/>
+                <TextBlock Text="00:00" FontSize="18" VerticalAlignment="Center" Margin="24,0,0,0"/>
             </StackPanel>
         </Border>
 
@@ -72,9 +71,15 @@
             </Border>
 
             <StackPanel Grid.Column="1" Margin="16,0,0,0" Spacing="10">
-                <Button Classes="toolbar" Content="Check Solution"/>
-                <Button Classes="toolbar" Content="Hint"/>
-                <Button Classes="toolbar" Content="Reset"/>
+                <Button Width="40" Height="40" Padding="0">
+                  <Image Source="{SvgImage /Assets/Images/Check_Button.svg}"/>
+                </Button>
+                <Button Width="40" Height="40" Padding="0">
+                  <Image Source="{SvgImage /Assets/Images/Hint_Button.svg}"/>
+                </Button>
+                <Button Width="40" Height="40" Padding="0" Click="Reset_Button_Click">
+                  <Image Source="{SvgImage /Assets/Images/Reset_Button.svg}"/>
+                </Button>
             </StackPanel>
         </Grid>
     </Grid>
