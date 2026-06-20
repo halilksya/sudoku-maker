@@ -10,6 +10,7 @@
              x:DataType="vm:SudokuViewModel">
 
     <UserControl.Styles>
+
         <Style Selector="Border.cell-frame">
             <Setter Property="Background" Value="White"/>
             <Setter Property="BorderBrush" Value="#111827"/>
@@ -25,29 +26,39 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="MaxLength" Value="1"/>
         </Style>
-    </UserControl.Styles>
 
+        <Style Selector="TextBox.cell-error">
+            <Setter Property="Background" Value="#ffcccc"/>
+        </Style>
+
+        <Style Selector="TextBox.cell-given">
+            <Setter Property="Background" Value="#eeeeee"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+    </UserControl.Styles>
     <Grid RowDefinitions="60,*" Background="#D3D3D3">
         <Border Grid.Row="0" Background="LightGray">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="10" Spacing="8">
                 <Button Width="40" Height="40" Padding="0" Click="Back_Button_Click">
-                  <Image Source="{SvgImage /Assets/Images/Back_Button.svg}"/>
+                    <Image Source="{SvgImage /Assets/Images/Back_Button.svg}"/>
                 </Button>
                 <Button Width="40" Height="40" Padding="0">
-                  <Image Source="{SvgImage /Assets/Images/Save_Button.svg}"/>
+                    <Image Source="{SvgImage /Assets/Images/Save_Button.svg}"/>
                 </Button>
                 <Button Width="40" Height="40" Padding="0">
-                  <Image Source="{SvgImage /Assets/Images/Import_Button.svg}"/>
+                    <Image Source="{SvgImage /Assets/Images/Import_Button.svg}"/>
                 </Button>
-                <Button Width="40" Height="40" Padding="0" Click="New_Button_Click">
-                  <Image Source="{SvgImage /Assets/Images/New_Button.svg}"/>
+                <Button Width="40" Height="40" Padding="0" Command="{Binding NewGameCommand}">
+                    <Image Source="{SvgImage /Assets/Images/New_Button.svg}"/>
                 </Button>
+
                 <TextBlock Text="Sudoku Maker" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="18,0,40,0"/>
+                
                 <Image Source="{SvgImage /Assets/Images/Clock.svg}" Width="40" Height="40"/>
+
                 <TextBlock Text="00:00" FontSize="18" VerticalAlignment="Center" Margin="24,0,0,0"/>
             </StackPanel>
         </Border>
-
         <Grid Grid.Row="1" Margin="20" ColumnDefinitions="*,220">
             <Border Grid.Column="0" Background="#f5f5f5" CornerRadius="10" Padding="16">
                 <Border HorizontalAlignment="Center" VerticalAlignment="Center" Background="#d9d9d9" Padding="8">
@@ -58,10 +69,14 @@
                                     <UniformGrid Rows="9" Columns="9"/>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="vm:SudokuCellViewModel">
-                                    <Border Classes="cell-frame" Width="56" Height="56" BorderThickness="{Binding BorderThickness}">
-                                        <TextBox Classes="cell" Text="{Binding Value, Mode=TwoWay}"/>
+                            <ItemsControl.ItemTemplate>  
+                                <DataTemplate x:DataType="vm:SudokuCellViewModel">   
+                                    <Border Classes="cell-frame" Width="56" Height="56">
+                                        <TextBox Classes="cell"
+                                                 Text="{Binding Value, Mode=TwoWay}"
+                                                 IsReadOnly="{Binding ReadOnly}"
+                                                 Classes.cell-error="{Binding HasError}"
+                                                 Classes.cell-given="{Binding IsGiven}"/>
                                     </Border>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
@@ -69,16 +84,15 @@
                     </Border>
                 </Border>
             </Border>
-
             <StackPanel Grid.Column="1" Margin="16,0,0,0" Spacing="10">
-                <Button Width="40" Height="40" Padding="0">
-                  <Image Source="{SvgImage /Assets/Images/Check_Button.svg}"/>
+                <Button Width="40" Height="40" Padding="0" Command="{Binding CheckCommand}">
+                    <Image Source="{SvgImage /Assets/Images/Check_Button.svg}"/>
                 </Button>
-                <Button Width="40" Height="40" Padding="0">
-                  <Image Source="{SvgImage /Assets/Images/Hint_Button.svg}"/>
+                <Button Width="40" Height="40" Padding="0" Command="{Binding HintCommand}">
+                    <Image Source="{SvgImage /Assets/Images/Hint_Button.svg}"/>
                 </Button>
-                <Button Width="40" Height="40" Padding="0" Click="Reset_Button_Click">
-                  <Image Source="{SvgImage /Assets/Images/Reset_Button.svg}"/>
+                <Button Width="40" Height="40" Padding="0" Command="{Binding ResetCommand}">
+                    <Image Source="{SvgImage /Assets/Images/Reset_Button.svg}"/>
                 </Button>
             </StackPanel>
         </Grid>
