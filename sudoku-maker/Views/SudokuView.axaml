@@ -42,10 +42,10 @@
                 <Button Width="40" Height="40" Padding="0" Click="Back_Button_Click">
                     <Image Source="{SvgImage /Assets/Images/Back_Button.svg}"/>
                 </Button>
-                <Button Width="40" Height="40" Padding="0">
+                <Button Width="40" Height="40" Padding="0" Command="{Binding SaveGameCommand}">
                     <Image Source="{SvgImage /Assets/Images/Save_Button.svg}"/>
                 </Button>
-                <Button Width="40" Height="40" Padding="0">
+                <Button Width="40" Height="40" Padding="0" Command="{Binding OpenSavedGamesCommand}">
                     <Image Source="{SvgImage /Assets/Images/Import_Button.svg}"/>
                 </Button>
                 <Button Width="40" Height="40" Padding="0" Command="{Binding NewGameCommand}">

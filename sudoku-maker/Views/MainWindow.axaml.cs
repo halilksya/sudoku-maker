@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using sudoku_maker.Models;
 using sudoku_maker.Views;
 
 namespace sudoku_maker;
@@ -10,9 +11,17 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
-    private void Create_New_Sudoku_Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private async void Create_New_Sudoku_Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        Content = new SudokuView();
+        var difficultySelectWindow = new DifficultySelectWindow();
+        var selectedDifficulty = await difficultySelectWindow.ShowDialog<Difficulty?>(this);
+
+        if (selectedDifficulty == null)
+        {
+            return;
+        }
+
+        Content = new SudokuView(selectedDifficulty.Value);
     }
 
     private void Continue_Sudoku_Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

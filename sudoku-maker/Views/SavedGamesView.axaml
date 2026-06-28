@@ -1,0 +1,24 @@
+<UserControl
+    x:Class="sudoku_maker.Views.SavedGamesView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="clr-namespace:sudoku_maker.ViewModels"
+    x:DataType="vm:SavedGameViewModel">
+
+    <StackPanel Margin="20" Spacing="12">
+        <TextBlock Text="Saved Games" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
+        <ListBox ItemsSource="{Binding SavedGames}" SelectedItem="{Binding SelectedSavedGame, Mode=TwoWay}" Height="300">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="vm:SavedGameItemViewModel">
+                    <TextBlock Text="{Binding DisplayText}" FontSize="16" Margin="8"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+            <Button Content="Open" Width="100" Command="{Binding OpenSelectedCommand}"/>
+            <Button Content="Delete" Width="100" Command="{Binding DeleteSelectedCommand}"/>
+            <Button Content="Cancel" Width="100" Command="{Binding CancelCommand}"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
