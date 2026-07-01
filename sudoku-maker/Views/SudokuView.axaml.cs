@@ -8,6 +8,11 @@ namespace sudoku_maker.Views;
 
 public partial class SudokuView : UserControl
 {
+    public SudokuView()
+        : this(null)
+    {
+    }
+
     public SudokuView(Difficulty? initialDifficulty = null)
     {
         InitializeComponent();
@@ -18,40 +23,68 @@ public partial class SudokuView : UserControl
         viewModel.AskForDifficulty = AskDifficultyAsync;
         DataContext = viewModel;
     }
-    
-    private void OpenSavedGames()
+
+    public void LoadSaveGame(SaveGame saveGame)
+    {
+        if (DataContext is SudokuViewModel sudokuViewModel)
+        {
+            sudokuViewModel.LoadSaveGame(saveGame);
+        }
+    }
+
+    public static Task<SaveGame?> PickSavedGameAsync(Window owner)
     {
         var savedGamesViewModel = new SavedGameViewModel();
-
         Window? window = null;
 
-        savedGamesViewModel.SaveGameSelected = (saveGame) =>
+        savedGamesViewModel.SaveGameSelected = saveGame =>
         {
-            if(DataContext is SudokuViewModel sudokuViewModel)
-            {
-                sudokuViewModel.LoadSaveGame(saveGame);
-            }
-
-            window?.Close();
+            window?.Close(saveGame);
         };
 
         savedGamesViewModel.CancelRequested = () =>
         {
-            window?.Close();
+            window?.Close((SaveGame?)null);
         };
 
         window = new Window
         {
             Title = "Saved Games",
-            Width = 400,
-            Height = 500,
+            Width = 480,
+            Height = 540,
+            MinWidth = 440,
+            MinHeight = 500,
+            CanResize = false,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
             Content = new SavedGamesView
             {
                 DataContext = savedGamesViewModel
             }
         };
 
-        window.Show();
+        return window.ShowDialog<SaveGame?>(owner);
+    }
+    
+    private void OpenSavedGames()
+    {
+        if (TopLevel.GetTopLevel(this) is not Window owner)
+        {
+            return;
+        }
+
+        _ = OpenSavedGamesAsync(owner);
+    }
+
+    private async Task OpenSavedGamesAsync(Window owner)
+    {
+        var saveGame = await PickSavedGameAsync(owner);
+
+        if (saveGame == null)
+        {
+            return;
+        }
+
+        LoadSaveGame(saveGame);
     }
 
     private async Task<SavePromptResult> AskSaveChangesAsync()

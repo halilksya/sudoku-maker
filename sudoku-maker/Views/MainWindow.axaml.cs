@@ -24,9 +24,18 @@ public partial class MainWindow : Window
         Content = new SudokuView(selectedDifficulty.Value);
     }
 
-    private void Continue_Sudoku_Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private async void Continue_Sudoku_Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        Content = new SudokuView();
+        var saveGame = await SudokuView.PickSavedGameAsync(this);
+
+        if (saveGame == null)
+        {
+            return;
+        }
+
+        var sudokuView = new SudokuView(saveGame.Difficulty);
+        sudokuView.LoadSaveGame(saveGame);
+        Content = sudokuView;
     }
 
     private void Exit_Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

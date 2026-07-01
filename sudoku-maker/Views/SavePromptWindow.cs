@@ -12,8 +12,8 @@ public class SavePromptWindow : Window
     public SavePromptWindow()
     {
         Title = "Save Changes";
-        Width = 500;
-        Height = 220;
+        Width = 560;
+        Height = 260;
         CanResize = false;
         WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
@@ -36,26 +36,27 @@ public class SavePromptWindow : Window
             Text = "You have unsaved changes. Do you want to save them?",
             FontSize = 15,
             TextAlignment = TextAlignment.Center,
+            TextWrapping = TextWrapping.Wrap,
             HorizontalAlignment = HorizontalAlignment.Center,
-            Margin = new Thickness(0, 10, 0, 8)
+            Margin = new Thickness(0, 0, 0, 16)
         };
 
         var saveButton = new Button
         {
             Content = "Save",
-            Width = 95,
+            Width = 120,
         };
 
         var dontSaveButton = new Button
         {
             Content = "Don't Save",
-            Width = 95,
+            Width = 120,
         };
 
         var cancelButton = new Button
         {
             Content = "Cancel",
-            Width = 95,
+            Width = 120,
         };
 
         saveButton.Click += (sender, e) =>
@@ -94,14 +95,14 @@ public class SavePromptWindow : Window
                 new Border
                 {
                     Background = Brushes.White,
-                    Width = 450,
-                    Padding = new Thickness(16),
+                    Width = 500,
+                    Padding = new Thickness(20),
                     CornerRadius = new CornerRadius(10),
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
                     Child = new StackPanel
                     {
-                        Spacing = 12,
+                        Spacing = 16,
                         Children =
                         {
                             text,

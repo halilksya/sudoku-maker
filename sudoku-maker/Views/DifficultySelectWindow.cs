@@ -12,8 +12,8 @@ public class DifficultySelectWindow : Window
     public DifficultySelectWindow()
     {
         Title = "Select Difficulty";
-        Width = 350;
-        Height = 350;
+        Width = 420;
+        Height = 420;
         CanResize = false;
         WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
@@ -37,36 +37,37 @@ public class DifficultySelectWindow : Window
             FontSize = 18,
             FontWeight = FontWeight.Bold,
             TextAlignment = TextAlignment.Center,
+            TextWrapping = TextWrapping.Wrap,
             HorizontalAlignment = HorizontalAlignment.Center,
-            Margin = new Thickness(0, 8, 0, 10)
+            Margin = new Thickness(0, 0, 0, 16)
         };
 
         var easyButton = new Button
         {
             HorizontalAlignment = HorizontalAlignment.Center,
             Content = "Easy",
-            Width = 80,
+            Width = 140,
         };
 
         var mediumButton = new Button
         {
             HorizontalAlignment = HorizontalAlignment.Center,
             Content = "Medium",
-            Width = 80,
+            Width = 140,
         };
 
         var hardButton = new Button
         {
             HorizontalAlignment = HorizontalAlignment.Center,
             Content = "Hard",
-            Width = 80,
+            Width = 140,
         };
 
         var cancelButton = new Button
         {
             HorizontalAlignment = HorizontalAlignment.Center,
             Content = "Cancel",
-            Width = 80,
+            Width = 140,
         };
 
         easyButton.Click += (sender, e) =>
@@ -97,16 +98,15 @@ public class DifficultySelectWindow : Window
                 new Border
                 {
                     Background = Brushes.White,
-                    Width = 290,
-                    Height = 290,
-                    Padding = new Thickness(16),
+                    Width = 340,
+                    Padding = new Thickness(20),
                     CornerRadius = new CornerRadius(10),
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Center,
                     Child = new StackPanel
                     {
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        Spacing = 10,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        Spacing = 12,
                         Children =
                         {
                             text,
