@@ -56,7 +56,7 @@
                 
                 <Image Source="{SvgImage /Assets/Images/Clock.svg}" Width="40" Height="40"/>
 
-                <TextBlock Text="00:00" FontSize="18" VerticalAlignment="Center" Margin="24,0,0,0"/>
+                <TextBlock Text="{Binding FormattedElaspedTime}" FontSize="18" VerticalAlignment="Center" Margin="24,0,0,0"/>
             </StackPanel>
         </Border>
         <Grid Grid.Row="1" Margin="20" ColumnDefinitions="*,220">

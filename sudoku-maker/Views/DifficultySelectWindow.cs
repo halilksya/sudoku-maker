@@ -12,8 +12,8 @@ public class DifficultySelectWindow : Window
     public DifficultySelectWindow()
     {
         Title = "Select Difficulty";
-        Width = 360;
-        Height = 290;
+        Width = 350;
+        Height = 350;
         CanResize = false;
         WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
@@ -43,26 +43,30 @@ public class DifficultySelectWindow : Window
 
         var easyButton = new Button
         {
+            HorizontalAlignment = HorizontalAlignment.Center,
             Content = "Easy",
-            Width = 140,
+            Width = 80,
         };
 
         var mediumButton = new Button
         {
+            HorizontalAlignment = HorizontalAlignment.Center,
             Content = "Medium",
-            Width = 140,
+            Width = 80,
         };
 
         var hardButton = new Button
         {
+            HorizontalAlignment = HorizontalAlignment.Center,
             Content = "Hard",
-            Width = 140,
+            Width = 80,
         };
 
         var cancelButton = new Button
         {
+            HorizontalAlignment = HorizontalAlignment.Center,
             Content = "Cancel",
-            Width = 140,
+            Width = 80,
         };
 
         easyButton.Click += (sender, e) =>
@@ -94,6 +98,7 @@ public class DifficultySelectWindow : Window
                 {
                     Background = Brushes.White,
                     Width = 290,
+                    Height = 290,
                     Padding = new Thickness(16),
                     CornerRadius = new CornerRadius(10),
                     HorizontalAlignment = HorizontalAlignment.Center,

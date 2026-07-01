@@ -2,8 +2,10 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Avalonia.Threading;
 using sudoku_maker.Models;
 using sudoku_maker.Services;
 
@@ -14,6 +16,9 @@ public partial class SudokuViewModel : ObservableObject
     private readonly SudokuGenerator _generator = new();
 
     private readonly SaveGameService _saveGameService = new();
+    private readonly DispatcherTimer _timer;
+    private readonly Stopwatch _stopwatch = new();
+    private int _timeElapsed;
 
     [ObservableProperty]
     private ObservableCollection<SudokuCellViewModel> _cells = new();
@@ -34,6 +39,16 @@ public partial class SudokuViewModel : ObservableObject
 
     public SudokuViewModel(Difficulty? initialDifficulty = null)
     {
+        _timer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(1)
+        };
+
+        _timer.Tick += (sender, args) =>
+        {
+            OnPropertyChanged(nameof(FormattedElaspedTime));
+        };
+
         if (initialDifficulty.HasValue)
         {
             SelectedDifficulty = initialDifficulty.Value;
@@ -92,6 +107,7 @@ public partial class SudokuViewModel : ObservableObject
 
         CurrentSaveId = null;
         HasUnsavedChanges = true;
+        StartTimer(0);
     }
 
     private SaveGame CreateSaveGameFromCurrentState()
@@ -99,7 +115,8 @@ public partial class SudokuViewModel : ObservableObject
         var saveGame = new SaveGame
         {
             Difficulty = SelectedDifficulty,
-            IsCompleted = false
+            IsCompleted = false,
+            TimeElapsed = _timeElapsed + (int)_stopwatch.Elapsed.TotalSeconds
         };
 
         if(!string.IsNullOrEmpty(CurrentSaveId))
@@ -109,9 +126,9 @@ public partial class SudokuViewModel : ObservableObject
 
         foreach(var cell in Cells)
         {
-            saveGame.Board[cell.Row, cell.Column] = cell.IsGiven ? cell.SolutionValue : 0;
-            saveGame.CurrentBoard[cell.Row, cell.Column] = cell.GetNumberValue();
-            saveGame.Solution[cell.Row, cell.Column] = cell.SolutionValue;
+            saveGame.Board[cell.Row][cell.Column] = cell.IsGiven ? cell.SolutionValue : 0;
+            saveGame.CurrentBoard[cell.Row][cell.Column] = cell.GetNumberValue();
+            saveGame.Solution[cell.Row][cell.Column] = cell.SolutionValue;
         }
 
         return saveGame;
@@ -178,9 +195,9 @@ public partial class SudokuViewModel : ObservableObject
         {
             for(int column = 0; column < SudokuBoard.Size; column++)
             {
-                int value = saveGame.Board[row, column];
-                int currentValue = saveGame.CurrentBoard[row, column];
-                int solutionValue = saveGame.Solution[row, column];
+                int value = saveGame.Board[row][column];
+                int currentValue = saveGame.CurrentBoard[row][column];
+                int solutionValue = saveGame.Solution[row][column];
 
                 int cellValue = currentValue != 0 ? currentValue : value;
 
@@ -198,6 +215,7 @@ public partial class SudokuViewModel : ObservableObject
             }
         }
         HasUnsavedChanges = false;
+        StartTimer(saveGame.TimeElapsed);
     }
 
     [RelayCommand]
@@ -249,5 +267,35 @@ public partial class SudokuViewModel : ObservableObject
         cell.ShowSolution();
 
         HasUnsavedChanges = true;
+    }
+
+    public string FormattedElaspedTime
+    {
+        get
+        {
+            var totalSecond = _timeElapsed + (int)_stopwatch.Elapsed.TotalSeconds;
+            var timeSpan = TimeSpan.FromSeconds(totalSecond);
+
+            if(timeSpan.TotalHours >= 1)
+            {
+                return timeSpan.ToString(@"hh\:mm\:ss");
+            }
+            else
+            {
+                return timeSpan.ToString(@"mm\:ss");
+            }
+        }
+    }
+
+    private void StartTimer(int elapsedSeconds = 0)
+    {
+        _timeElapsed = elapsedSeconds;
+        _stopwatch.Restart();
+
+        if (!_timer.IsEnabled)
+        {
+            _timer.Start();
+        }
+        OnPropertyChanged(nameof(FormattedElaspedTime));
     }
 }

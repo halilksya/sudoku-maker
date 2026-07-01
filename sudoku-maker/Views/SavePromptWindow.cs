@@ -12,7 +12,7 @@ public class SavePromptWindow : Window
     public SavePromptWindow()
     {
         Title = "Save Changes";
-        Width = 420;
+        Width = 500;
         Height = 220;
         CanResize = false;
         WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -94,7 +94,7 @@ public class SavePromptWindow : Window
                 new Border
                 {
                     Background = Brushes.White,
-                    Width = 370,
+                    Width = 450,
                     Padding = new Thickness(16),
                     CornerRadius = new CornerRadius(10),
                     HorizontalAlignment = HorizontalAlignment.Center,
