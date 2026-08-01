@@ -1,3 +1,6 @@
 sudoku-maker/bin/
 sudoku-maker/obj/
 .dotnet-home/
+*.app/
+AppIcon.iconset/
+*.icns

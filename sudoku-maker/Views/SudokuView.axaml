@@ -25,14 +25,19 @@
             <Setter Property="MaxLength" Value="1"/>
         </Style>
 
-        <Style Selector="TextBox.cell-error">
-            <Setter Property="Background" Value="{DynamicResource ErrorBg}"/>
-        </Style>
-
         <Style Selector="TextBox.cell-given">
             <Setter Property="Background" Value="{DynamicResource BgPage}"/>
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
+        
+        <Style Selector="TextBox.cell-error">
+            <Setter Property="Background" Value="{DynamicResource ErrorBg}"/>
+        </Style>
+        
+        <Style Selector="TextBox.cell-conflict">
+            <Setter Property="Background" Value="#F5D9A8"/>
+        </Style>
+
     </UserControl.Styles>
     <Grid RowDefinitions="60,*" Background="{DynamicResource BgPage}">
         <Border Grid.Row="0" Background="{DynamicResource BgCard}">
@@ -75,6 +80,7 @@
                                                     Text="{Binding Value, Mode=TwoWay}"
                                                     IsReadOnly="{Binding ReadOnly}"
                                                     Classes.cell-error="{Binding HasError}"
+                                                    Classes.cell-conflict="{Binding HasConflict}"
                                                     Classes.cell-given="{Binding IsGiven}"/>
                                         </Border>
                                     </DataTemplate>

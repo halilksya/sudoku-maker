@@ -18,6 +18,9 @@ public partial class SudokuCellViewModel : ObservableObject
     [ObservableProperty]
     private bool hasError;
 
+    [ObservableProperty]
+    private bool hasConflict;
+
     public SudokuCellViewModel(int row, int column, int value, int solutionValue)
     {
         Row = row;

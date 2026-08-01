@@ -1,0 +1,25 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="sudoku_maker.Views.SavePromptWindow"
+        Title="Save Changes"
+        Width="560" Height="260"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner">
+    <Grid Background="{DynamicResource BgPage}">
+        <Border Background="{DynamicResource BgCard}"
+                BorderBrush="{DynamicResource BorderColor}" BorderThickness="1"
+                Width="500" Padding="20" CornerRadius="10"
+                HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Spacing="16">
+                <TextBlock Text="You have unsaved changes. Do you want to save them?"
+                           FontSize="15" TextAlignment="Center" TextWrapping="Wrap"
+                           HorizontalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="12">
+                    <Button Name="SaveButton" Content="Save" Width="120" Click="SaveButton_Click"/>
+                    <Button Name="DontSaveButton" Content="Don't Save" Width="120" Click="DontSaveButton_Click"/>
+                    <Button Name="CancelButton" Content="Cancel" Width="120" Click="CancelButton_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

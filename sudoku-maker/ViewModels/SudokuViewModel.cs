@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 using Avalonia.Threading;
 using sudoku_maker.Models;
 using sudoku_maker.Services;
+using System.Collections.Generic;
 
 namespace sudoku_maker.ViewModels;
 
@@ -98,6 +99,7 @@ public partial class SudokuViewModel : ObservableObject
                     if (args.PropertyName == nameof(SudokuCellViewModel.Value))
                     {
                         HasUnsavedChanges = true;
+                        ValidateConflicts();
                     }
                 };
 
@@ -105,6 +107,7 @@ public partial class SudokuViewModel : ObservableObject
             }
         }
 
+        ValidateConflicts();
         CurrentSaveId = null;
         HasUnsavedChanges = true;
         StartTimer(0);
@@ -208,14 +211,63 @@ public partial class SudokuViewModel : ObservableObject
                     if (args.PropertyName == nameof(SudokuCellViewModel.Value))
                     {
                         HasUnsavedChanges = true;
+                        ValidateConflicts();
                     }
                 };
 
                 Cells.Add(cell);
             }
         }
+        ValidateConflicts();
         HasUnsavedChanges = false;
         StartTimer(saveGame.TimeElapsed);
+    }
+
+    private void ValidateConflicts()
+    {
+        foreach (var cell in Cells)
+        {
+            cell.HasConflict = false;
+        }
+
+        for (int row = 0; row < SudokuBoard.Size; row++)
+        {
+            MarkGroupIfHasDuplicate(Cells.Where(c => c.Row == row));
+        }
+
+        for (int column = 0; column < SudokuBoard.Size; column++)
+        {
+            MarkGroupIfHasDuplicate(Cells.Where(c => c.Column == column));
+        }
+
+        for (int boxRow = 0; boxRow < 3; boxRow++)
+        {
+            for (int boxColumn = 0; boxColumn < 3; boxColumn++)
+            {
+                int br = boxRow, bc = boxColumn;
+                MarkGroupIfHasDuplicate(Cells.Where(c => c.Row / 3 == br && c.Column / 3 == bc));
+            }
+        }
+    }
+
+    private static void MarkGroupIfHasDuplicate(IEnumerable<SudokuCellViewModel> group)
+    {
+        var cellList = group.ToList();
+
+        var values = cellList
+            .Select(c => c.GetNumberValue())
+            .Where(v => v != 0)
+            .ToList();
+
+        bool hasDuplicate = values.Count != values.Distinct().Count();
+
+        if (hasDuplicate)
+        {
+            foreach (var cell in cellList)
+            {
+                cell.HasConflict = true;
+            }
+        }
     }
 
     [RelayCommand]
