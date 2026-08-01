@@ -1,0 +1,42 @@
+<Project>
+
+  <Target Name="_SwapDiagnosticsSupportAvaloniaVersion"
+          AfterTargets="ResolvePackageAssets"
+          Condition="'$(AvaloniaMainPackageVersion)' != '' AND $(AvaloniaMainPackageVersion.StartsWith('11'))">
+
+    <!-- Find the already-resolved path for AvaloniaUI.DiagnosticsSupport.Avalonia.dll, so we derive the v11 variant path from it. -->
+    <ItemGroup>
+      <_DiagSupportResolvedRef Include="@(ResolvedCompileFileDefinitions)"
+                               Condition="'%(Filename)' == 'AvaloniaUI.DiagnosticsSupport.Avalonia'" />
+    </ItemGroup>
+
+    <PropertyGroup>
+      <_DiagSupportV11Path>@(_DiagSupportResolvedRef->'%(RootDir)%(Directory)v11/%(Filename)%(Extension)')</_DiagSupportV11Path>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ResolvedCompileFileDefinitions Remove="@(ResolvedCompileFileDefinitions)"
+                                      Condition="'%(Filename)' == 'AvaloniaUI.DiagnosticsSupport.Avalonia'" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ResolvedCopyLocalItems Remove="@(ResolvedCopyLocalItems)"
+                              Condition="'%(Filename)' == 'AvaloniaUI.DiagnosticsSupport.Avalonia'" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ResolvedCompileFileDefinitions Include="$(_DiagSupportV11Path)" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ResolvedCopyLocalItems Include="$(_DiagSupportV11Path)">
+        <CopyLocal>true</CopyLocal>
+        <Private>true</Private>
+      </ResolvedCopyLocalItems>
+    </ItemGroup>
+
+    <Message Importance="normal"
+             Text="AvaloniaUI.DiagnosticsSupport: Using Avalonia v11 assembly variant from '$(_DiagSupportV11Path)' (detected version: $(AvaloniaMainPackageVersion))" />
+  </Target>
+
+</Project>

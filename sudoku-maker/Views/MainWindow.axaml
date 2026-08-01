@@ -5,27 +5,40 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="sudoku_maker.MainWindow"
-        Title="sudoku_maker">
-        <Grid Background="LightGray">
+    Title="sudoku_maker"
+    Width="920"
+    Height="720"
+    MinWidth="880"
+    MinHeight="680"
+    WindowStartupLocation="CenterScreen">
+        <Grid Background="{DynamicResource BgPage}">
             <Grid.Styles>
                 <Style Selector="Button">
-                    <Setter Property="Background" Value="LightBlue"/>
-                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Background" Value="{DynamicResource BgCard}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
                     <Setter Property="FontSize" Value="14"/>
                     <Setter Property="Padding" Value="5"/>
                     <Setter Property="BorderThickness" Value="1"/>
-                    <Setter Property="BorderBrush" Value="Gray"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
                     <Setter Property="CornerRadius" Value="5"/>
-                    <Setter Property="RenderTransform" Value="scale(1.11)"></Setter>
+                </Style>
+                <Style Selector="Button:pointerover">
+                    <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
+                    <Setter Property="BorderThickness" Value="1.5"/>
+                </Style>
+                <Style Selector="Button:pressed">
+                    <Setter Property="RenderTransform" Value="scale(0.97)"/>
                 </Style>
                 <Style Selector="Label">
                     <Setter Property="FontSize" Value="18"/>
                     <Setter Property="FontWeight" Value="Bold"/>
-                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
                 </Style>
             </Grid.Styles>
-            <Border CornerRadius="10" ClipToBounds="True" Background="White" Width="200" Height="200">
-                <Grid HorizontalAlignment="Center" VerticalAlignment="Center" RowDefinitions="Auto,Auto,Auto, Auto" >
+            <Border CornerRadius="12" Background="{DynamicResource BgCard}"
+                    BorderBrush="{DynamicResource BorderColor}" BorderThickness="1"
+                    MinWidth="280" Padding="24" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Center" RowDefinitions="Auto,Auto,Auto, Auto">
                     <Label Grid.Row="0" Content="Sudoku Maker" HorizontalAlignment="Center" Padding="10"> </Label>
                     <Button Grid.Row="1" Click="Create_New_Sudoku_Button_Click" Content="Create New Sudoku" HorizontalAlignment="Center" Margin="7,7,7,7" Width="150" HorizontalContentAlignment="Center" > </Button>
                     <Button Grid.Row="2" Click="Continue_Sudoku_Button_Click" Content="Continue Sudoku" HorizontalAlignment="Center" Margin="7,7,7,7" Width="150" HorizontalContentAlignment="Center"> </Button>
