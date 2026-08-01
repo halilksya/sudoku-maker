@@ -12,6 +12,15 @@
         <SolidColorBrush x:Key="AccentColor">#0F6E56</SolidColorBrush>
         <SolidColorBrush x:Key="ErrorBg">#F5C4B3</SolidColorBrush>
         <FontFamily x:Key="AppFont">avares://Avalonia.Fonts.Inter/Assets#Inter</FontFamily>
+        <StaticResource x:Key="ButtonBackground" ResourceKey="BgCard"/>
+        <StaticResource x:Key="ButtonBackgroundPointerOver" ResourceKey="BgCard"/>
+        <StaticResource x:Key="ButtonBackgroundPressed" ResourceKey="BgCard"/>
+        <StaticResource x:Key="ButtonForeground" ResourceKey="TextPrimary"/>
+        <StaticResource x:Key="ButtonForegroundPointerOver" ResourceKey="TextPrimary"/>
+        <StaticResource x:Key="ButtonForegroundPressed" ResourceKey="TextPrimary"/>
+        <StaticResource x:Key="ButtonBorderBrush" ResourceKey="BorderColor"/>
+        <StaticResource x:Key="ButtonBorderBrushPointerOver" ResourceKey="AccentColor"/>
+        <StaticResource x:Key="ButtonBorderBrushPressed" ResourceKey="AccentColor"/>
     </Application.Resources>
     <Application.Styles>
         <FluentTheme />
@@ -19,18 +28,12 @@
             <Setter Property="FontFamily" Value="{DynamicResource AppFont}"/>
         </Style>
         <Style Selector="Button">
-            <Setter Property="Background" Value="{DynamicResource BgCard}"/>
-            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Padding" Value="5"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
             <Setter Property="CornerRadius" Value="5"/>
         </Style>
         <Style Selector="Button:pointerover">
-            <Setter Property="Background" Value="{DynamicResource BgCard}"/>
-            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
             <Setter Property="BorderThickness" Value="1.5"/>
         </Style>
         <Style Selector="Button:pressed">
