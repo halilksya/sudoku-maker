@@ -1,0 +1,24 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="sudoku_maker.Views.DifficultySelectWindow"
+        Title="Select Difficulty"
+        Width="420" Height="420"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner">
+    <Grid Background="{DynamicResource BgPage}">
+        <Border Background="{DynamicResource BgCard}"
+                BorderBrush="{DynamicResource BorderColor}" BorderThickness="1"
+                Width="340" Padding="20" CornerRadius="10"
+                HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Spacing="12" HorizontalAlignment="Stretch">
+                <TextBlock Text="Please select a difficulty level:"
+                           FontSize="18" FontWeight="Bold" TextAlignment="Center"
+                           TextWrapping="Wrap" HorizontalAlignment="Center" Margin="0,0,0,16"/>
+                <Button Name="EasyButton" Content="Easy" Width="140" HorizontalAlignment="Center" Click="EasyButton_Click"/>
+                <Button Name="MediumButton" Content="Medium" Width="140" HorizontalAlignment="Center" Click="MediumButton_Click"/>
+                <Button Name="HardButton" Content="Hard" Width="140" HorizontalAlignment="Center" Click="HardButton_Click"/>
+                <Button Name="CancelButton" Content="Cancel" Width="140" HorizontalAlignment="Center" Click="CancelButton_Click"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

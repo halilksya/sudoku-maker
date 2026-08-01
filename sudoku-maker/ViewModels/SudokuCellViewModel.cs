@@ -11,9 +11,6 @@ public partial class SudokuCellViewModel : ObservableObject
     public bool IsGiven { get; }
     public bool IsEditable => !IsGiven;
     public bool ReadOnly => IsGiven;
-
-    public bool BlockRightEdge => (Column + 1) % 3 == 0 && Column != 8;
-    public bool BlockBottomEdge => (Row + 1) % 3 == 0 && Row != 8;
     
     [ObservableProperty]
     private string _value = string.Empty;

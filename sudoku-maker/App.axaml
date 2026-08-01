@@ -11,7 +11,7 @@
         <SolidColorBrush x:Key="BorderColor">#D3D1C7</SolidColorBrush>
         <SolidColorBrush x:Key="AccentColor">#0F6E56</SolidColorBrush>
         <SolidColorBrush x:Key="ErrorBg">#F5C4B3</SolidColorBrush>
-        <FontFamily x:Key="AppFont">avares://sudoku-maker/Assets/Fonts#Inter</FontFamily>
+        <FontFamily x:Key="AppFont">avares://Avalonia.Fonts.Inter/Assets#Inter</FontFamily>
     </Application.Resources>
     <Application.Styles>
         <FluentTheme />
@@ -28,6 +28,8 @@
             <Setter Property="CornerRadius" Value="5"/>
         </Style>
         <Style Selector="Button:pointerover">
+            <Setter Property="Background" Value="{DynamicResource BgCard}"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
             <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
             <Setter Property="BorderThickness" Value="1.5"/>
         </Style>

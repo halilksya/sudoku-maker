@@ -13,20 +13,6 @@
 
         <Style Selector="Border.cell-frame">
             <Setter Property="Background" Value="{DynamicResource BgCard}"/>
-            <Setter Property="BorderBrush" Value="{DynamicResource TextPrimary}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-        </Style>
-
-        <Style Selector="Border.cell-frame.block-right">
-            <Setter Property="BorderThickness" Value="1,1,3,1"/>
-        </Style>
-
-        <Style Selector="Border.cell-frame.block-bottom">
-            <Setter Property="BorderThickness" Value="1,1,1,3"/>
-        </Style>
-
-        <Style Selector="Border.cell-frame.block-right.block-bottom">
-            <Setter Property="BorderThickness" Value="1,1,3,3"/>
         </Style>
 
         <Style Selector="TextBox.cell">
@@ -75,26 +61,56 @@
             <Border Grid.Column="0" Background="{DynamicResource BgPage}" CornerRadius="10" Padding="16">
                 <Border HorizontalAlignment="Center" VerticalAlignment="Center" Background="{DynamicResource BorderColor}" Padding="8">
                     <Border Background="{DynamicResource BgCard}" Padding="6">
-                        <ItemsControl ItemsSource="{Binding Cells}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <UniformGrid Rows="9" Columns="9"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>  
-                                <DataTemplate x:DataType="vm:SudokuCellViewModel">   
-                                    <Border Classes="cell-frame" Width="56" Height="56"
-                                            Classes.block-right="{Binding BlockRightEdge}"
-                                            Classes.block-bottom="{Binding BlockBottomEdge}">
-                                        <TextBox Classes="cell"
-                                                 Text="{Binding Value, Mode=TwoWay}"
-                                                 IsReadOnly="{Binding ReadOnly}"
-                                                 Classes.cell-error="{Binding HasError}"
-                                                 Classes.cell-given="{Binding IsGiven}"/>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                        <Grid>
+                            <ItemsControl ItemsSource="{Binding Cells}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Rows="9" Columns="9"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>  
+                                    <DataTemplate x:DataType="vm:SudokuCellViewModel">   
+                                        <Border Classes="cell-frame" Width="56" Height="56">
+                                            <TextBox Classes="cell"
+                                                    Text="{Binding Value, Mode=TwoWay}"
+                                                    IsReadOnly="{Binding ReadOnly}"
+                                                    Classes.cell-error="{Binding HasError}"
+                                                    Classes.cell-given="{Binding IsGiven}"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <Canvas Width="504" Height="504" IsHitTestVisible="False">
+                                <!-- dikey ince çizgiler -->
+                                <Rectangle Canvas.Left="55.5" Canvas.Top="0" Width="1" Height="504" Fill="{DynamicResource TextPrimary}"/>
+                                <Rectangle Canvas.Left="111.5" Canvas.Top="0" Width="1" Height="504" Fill="{DynamicResource TextPrimary}"/>
+                                <Rectangle Canvas.Left="223.5" Canvas.Top="0" Width="1" Height="504" Fill="{DynamicResource TextPrimary}"/>
+                                <Rectangle Canvas.Left="279.5" Canvas.Top="0" Width="1" Height="504" Fill="{DynamicResource TextPrimary}"/>
+                                <Rectangle Canvas.Left="391.5" Canvas.Top="0" Width="1" Height="504" Fill="{DynamicResource TextPrimary}"/>
+                                <Rectangle Canvas.Left="447.5" Canvas.Top="0" Width="1" Height="504" Fill="{DynamicResource TextPrimary}"/>
+
+                                <!-- yatay ince çizgiler -->
+                                <Rectangle Canvas.Left="0" Canvas.Top="55.5" Width="504" Height="1" Fill="{DynamicResource TextPrimary}"/>
+                                <Rectangle Canvas.Left="0" Canvas.Top="111.5" Width="504" Height="1" Fill="{DynamicResource TextPrimary}"/>
+                                <Rectangle Canvas.Left="0" Canvas.Top="223.5" Width="504" Height="1" Fill="{DynamicResource TextPrimary}"/>
+                                <Rectangle Canvas.Left="0" Canvas.Top="279.5" Width="504" Height="1" Fill="{DynamicResource TextPrimary}"/>
+                                <Rectangle Canvas.Left="0" Canvas.Top="391.5" Width="504" Height="1" Fill="{DynamicResource TextPrimary}"/>
+                                <Rectangle Canvas.Left="0" Canvas.Top="447.5" Width="504" Height="1" Fill="{DynamicResource TextPrimary}"/>
+
+                                <!-- kalın blok çizgileri -->
+                                <Rectangle Canvas.Left="166.5" Canvas.Top="0" Width="3" Height="504" Fill="{DynamicResource TextPrimary}"/>
+                                <Rectangle Canvas.Left="334.5" Canvas.Top="0" Width="3" Height="504" Fill="{DynamicResource TextPrimary}"/>
+                                <Rectangle Canvas.Left="0" Canvas.Top="166.5" Width="504" Height="3" Fill="{DynamicResource TextPrimary}"/>
+                                <Rectangle Canvas.Left="0" Canvas.Top="334.5" Width="504" Height="3" Fill="{DynamicResource TextPrimary}"/>
+
+                                <!-- dış çerçeve -->
+                                <Rectangle Canvas.Left="0" Canvas.Top="0" Width="504" Height="2" Fill="{DynamicResource TextPrimary}"/>
+                                <Rectangle Canvas.Left="0" Canvas.Top="502" Width="504" Height="2" Fill="{DynamicResource TextPrimary}"/>
+                                <Rectangle Canvas.Left="0" Canvas.Top="0" Width="2" Height="504" Fill="{DynamicResource TextPrimary}"/>
+                                <Rectangle Canvas.Left="502" Canvas.Top="0" Width="2" Height="504" Fill="{DynamicResource TextPrimary}"/>
+                            </Canvas>
+                        </Grid>
                     </Border>
                 </Border>
             </Border>
