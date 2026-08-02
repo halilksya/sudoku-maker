@@ -24,12 +24,12 @@ public partial class SudokuCellViewModel : ObservableObject
     [ObservableProperty]
     private bool hasConflict;
 
-    public SudokuCellViewModel(int row, int column, int value, int solutionValue)
+    public SudokuCellViewModel(int row, int column, int value, int solutionValue, bool isGiven)
     {
         Row = row;
         Column = column;
         SolutionValue = solutionValue;
-        IsGiven = value != 0;
+        IsGiven = isGiven;
         this._value = value == 0 ? string.Empty : value.ToString();
     }
 

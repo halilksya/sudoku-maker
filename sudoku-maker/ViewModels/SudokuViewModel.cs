@@ -92,7 +92,7 @@ public partial class SudokuViewModel : ObservableObject
                 int value = sudoku.Puzzle.GetValue(row, column);
                 int solutionValue = sudoku.Solution.GetValue(row, column);
 
-                var cell = new SudokuCellViewModel(row, column, value, solutionValue);
+                var cell = new SudokuCellViewModel(row, column, value, solutionValue, isGiven: value != 0);
 
                 cell.PropertyChanged += (sender, args) =>
                 {
@@ -202,9 +202,10 @@ public partial class SudokuViewModel : ObservableObject
                 int currentValue = saveGame.CurrentBoard[row][column];
                 int solutionValue = saveGame.Solution[row][column];
 
+                bool isGiven = value != 0;
                 int cellValue = currentValue != 0 ? currentValue : value;
 
-                var cell = new SudokuCellViewModel(row, column, cellValue, solutionValue);
+                var cell = new SudokuCellViewModel(row, column, cellValue, solutionValue, isGiven);
 
                 cell.PropertyChanged += (sender, args) =>
                 {
