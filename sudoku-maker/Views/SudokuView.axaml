@@ -13,11 +13,18 @@
 
         <Style Selector="Border.cell-frame">
             <Setter Property="Background" Value="{DynamicResource BgCard}"/>
+            <Setter Property="ClipToBounds" Value="True"/>
         </Style>
 
         <Style Selector="TextBox.cell">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="MinWidth" Value="0"/>
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="FontSize" Value="18"/>
@@ -67,14 +74,14 @@
                 <Border HorizontalAlignment="Center" VerticalAlignment="Center" Background="{DynamicResource BorderColor}" Padding="8">
                     <Border Background="{DynamicResource BgCard}" Padding="6">
                         <Grid>
-                            <ItemsControl ItemsSource="{Binding Cells}">
+                            <ItemsControl ItemsSource="{Binding Cells}" Width="504" Height="504">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <UniformGrid Rows="9" Columns="9"/>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
-                                <ItemsControl.ItemTemplate>  
-                                    <DataTemplate x:DataType="vm:SudokuCellViewModel">   
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:SudokuCellViewModel">
                                         <Border Classes="cell-frame" Width="56" Height="56">
                                             <TextBox Classes="cell"
                                                     Text="{Binding Value, Mode=TwoWay}"
