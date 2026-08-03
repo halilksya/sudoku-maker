@@ -21,6 +21,7 @@ public partial class SudokuView : UserControl
         viewModel.OpenSavedGamesRequested = OpenSavedGames;
         viewModel.AskToSaveChanges = AskSaveChangesAsync;
         viewModel.AskForDifficulty = AskDifficultyAsync;
+        viewModel.ShowCompletionAndAskNewGame =ShowCompletionAndAskNewGameAsync;
         DataContext = viewModel;
     }
 
@@ -107,6 +108,17 @@ public partial class SudokuView : UserControl
 
         var difficultySelectWindow = new DifficultySelectWindow();
         return await difficultySelectWindow.ShowDialog<Difficulty?>(owner);
+    }
+
+    private async Task<bool> ShowCompletionAndAskNewGameAsync()
+    {
+        if (TopLevel.GetTopLevel(this) is not Window owner)
+        {
+            return false;
+        }
+
+        var completionWindow = new CompletionWindow();
+        return await completionWindow.ShowDialog<bool>(owner);
     }
 
     private void Back_Button_Click(object? sender, RoutedEventArgs e)

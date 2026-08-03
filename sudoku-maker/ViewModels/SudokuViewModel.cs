@@ -21,6 +21,8 @@ public partial class SudokuViewModel : ObservableObject
     private readonly Stopwatch _stopwatch = new();
     private int _timeElapsed;
 
+    private bool _completionNoticeShown;
+
     [ObservableProperty]
     private ObservableCollection<SudokuCellViewModel> _cells = new();
 
@@ -37,6 +39,8 @@ public partial class SudokuViewModel : ObservableObject
     public Func<Task<SavePromptResult>>? AskToSaveChanges { get; set; }
 
     public Func<Task<Difficulty?>>? AskForDifficulty { get; set; }
+
+    public Func<Task<bool>>? ShowCompletionAndAskNewGame { get; set; }
 
     public SudokuViewModel(Difficulty? initialDifficulty = null)
     {
@@ -100,6 +104,7 @@ public partial class SudokuViewModel : ObservableObject
                     {
                         HasUnsavedChanges = true;
                         ValidateConflicts();
+                        CheckForCompletion();
                     }
                 };
 
@@ -108,6 +113,7 @@ public partial class SudokuViewModel : ObservableObject
         }
 
         ValidateConflicts();
+        _completionNoticeShown = false;
         CurrentSaveId = null;
         HasUnsavedChanges = true;
         StartTimer(0);
@@ -118,7 +124,7 @@ public partial class SudokuViewModel : ObservableObject
         var saveGame = new SaveGame
         {
             Difficulty = SelectedDifficulty,
-            IsCompleted = false,
+            IsCompleted = Cells.All(c => c.GetNumberValue() == c.SolutionValue),
             TimeElapsed = _timeElapsed + (int)_stopwatch.Elapsed.TotalSeconds
         };
 
@@ -220,8 +226,14 @@ public partial class SudokuViewModel : ObservableObject
             }
         }
         ValidateConflicts();
+        _completionNoticeShown = saveGame.IsCompleted;
         HasUnsavedChanges = false;
         StartTimer(saveGame.TimeElapsed);
+
+        if(saveGame.IsCompleted)
+        {
+            StopTimer();
+        }
     }
 
     private void ValidateConflicts()
@@ -350,5 +362,41 @@ public partial class SudokuViewModel : ObservableObject
             _timer.Start();
         }
         OnPropertyChanged(nameof(FormattedElaspedTime));
+    }
+
+    private void StopTimer()
+    {
+        _stopwatch.Stop();
+        _timer.Stop();
+        OnPropertyChanged(nameof(FormattedElaspedTime));
+    }
+
+    private async void CheckForCompletion()
+    {
+        if (_completionNoticeShown)
+        {
+            return;
+        }
+
+        bool isSolved = Cells.All(c => c.GetNumberValue() == c.SolutionValue);
+
+        if (!isSolved)
+        {
+            return;
+        }
+
+        _completionNoticeShown = true;
+        StopTimer();
+        SaveGame();
+
+        if (ShowCompletionAndAskNewGame != null)
+        {
+            bool wantsNewGame = await ShowCompletionAndAskNewGame();
+
+            if (wantsNewGame)
+            {
+                CreateNewGame();
+            }
+        }
     }
 }
