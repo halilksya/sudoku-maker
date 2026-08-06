@@ -6,9 +6,14 @@ namespace sudoku_maker.Views;
 
 public partial class CompletionWindow : Window
 {
-    public CompletionWindow()
+    public CompletionWindow() : this(0)
+    {
+    }
+
+    public CompletionWindow(int score)
     {
         InitializeComponent();
+        ScoreTextBlock.Text = $"Score: {score}";
     }
 
     private void InitializeComponent()

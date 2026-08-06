@@ -14,6 +14,9 @@
                 <TextBlock Text="Congratulations, you solved the puzzle!"
                            FontSize="17" FontWeight="Bold" TextAlignment="Center"
                            TextWrapping="Wrap" HorizontalAlignment="Center"/>
+                <TextBlock x:Name="ScoreTextBlock" Text="Score: 0"
+                            FontSize="16" FontWeight="SemiBold" TextAlignment="Center"
+                            HorizontalAlignment="Center"/>
                 <TextBlock Text="Would you like to start a new puzzle?"
                            FontSize="14" TextAlignment="Center" TextWrapping="Wrap"
                            HorizontalAlignment="Center"/>

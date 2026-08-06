@@ -13,7 +13,9 @@ public class SaveGame
     public int[][] CurrentBoard {get; set;} = CreateBoard();
     public int[][] Solution {get; set;} = CreateBoard();
     public bool IsCompleted {get; set;} = false;
-
+    public int Score {get; set;} = 0;
+    public int HintsUsed {get; set;} = 0;
+    
     private static int[][] CreateBoard()
     {
         var board = new int[9][];

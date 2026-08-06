@@ -15,13 +15,15 @@ namespace sudoku_maker.ViewModels;
 public partial class SudokuViewModel : ObservableObject
 {
     private readonly SudokuGenerator _generator = new();
-
     private readonly SaveGameService _saveGameService = new();
     private readonly DispatcherTimer _timer;
     private readonly Stopwatch _stopwatch = new();
     private int _timeElapsed;
-
     private bool _completionNoticeShown;
+    private int _hintsUsed;
+    private DateTime? _lastEntryTime;
+    private readonly List<double> _entryIntervals = new();
+
 
     [ObservableProperty]
     private ObservableCollection<SudokuCellViewModel> _cells = new();
@@ -40,7 +42,7 @@ public partial class SudokuViewModel : ObservableObject
 
     public Func<Task<Difficulty?>>? AskForDifficulty { get; set; }
 
-    public Func<Task<bool>>? ShowCompletionAndAskNewGame { get; set; }
+    public Func<int, Task<bool>>? ShowCompletionAndAskNewGame { get; set; }
 
     public SudokuViewModel(Difficulty? initialDifficulty = null)
     {
@@ -102,6 +104,7 @@ public partial class SudokuViewModel : ObservableObject
                 {
                     if (args.PropertyName == nameof(SudokuCellViewModel.Value))
                     {
+                        TrackEntrySpeed(sender as SudokuCellViewModel);
                         HasUnsavedChanges = true;
                         ValidateConflicts();
                         CheckForCompletion();
@@ -114,6 +117,9 @@ public partial class SudokuViewModel : ObservableObject
 
         ValidateConflicts();
         _completionNoticeShown = false;
+        _hintsUsed = 0;
+        _entryIntervals.Clear();
+        _lastEntryTime = null;
         CurrentSaveId = null;
         HasUnsavedChanges = true;
         StartTimer(0);
@@ -121,11 +127,15 @@ public partial class SudokuViewModel : ObservableObject
 
     private SaveGame CreateSaveGameFromCurrentState()
     {
+        bool isCompleted = Cells.All(c => c.GetNumberValue() == c.SolutionValue);
+
         var saveGame = new SaveGame
         {
             Difficulty = SelectedDifficulty,
-            IsCompleted = Cells.All(c => c.GetNumberValue() == c.SolutionValue),
-            TimeElapsed = _timeElapsed + (int)_stopwatch.Elapsed.TotalSeconds
+            IsCompleted = isCompleted,
+            TimeElapsed = _timeElapsed + (int)_stopwatch.Elapsed.TotalSeconds,
+            HintsUsed = _hintsUsed,
+            Score = isCompleted ? CalculateScore() : 0
         };
 
         if(!string.IsNullOrEmpty(CurrentSaveId))
@@ -217,8 +227,10 @@ public partial class SudokuViewModel : ObservableObject
                 {
                     if (args.PropertyName == nameof(SudokuCellViewModel.Value))
                     {
+                        TrackEntrySpeed(sender as SudokuCellViewModel);
                         HasUnsavedChanges = true;
                         ValidateConflicts();
+                        CheckForCompletion();
                     }
                 };
 
@@ -227,6 +239,9 @@ public partial class SudokuViewModel : ObservableObject
         }
         ValidateConflicts();
         _completionNoticeShown = saveGame.IsCompleted;
+        _hintsUsed = saveGame.HintsUsed;
+        _entryIntervals.Clear();
+        _lastEntryTime = null;
         HasUnsavedChanges = false;
         StartTimer(saveGame.TimeElapsed);
 
@@ -331,6 +346,7 @@ public partial class SudokuViewModel : ObservableObject
 
         cell.ShowSolution();
 
+        _hintsUsed++;
         HasUnsavedChanges = true;
     }
 
@@ -371,6 +387,55 @@ public partial class SudokuViewModel : ObservableObject
         OnPropertyChanged(nameof(FormattedElaspedTime));
     }
 
+    private void TrackEntrySpeed(SudokuCellViewModel? cell)
+    {
+        if (cell == null || string.IsNullOrEmpty(cell.Value))
+        {
+            return;
+        }
+
+        var now = DateTime.UtcNow;
+
+        if (_lastEntryTime.HasValue)
+        {
+            _entryIntervals.Add((now - _lastEntryTime.Value).TotalSeconds);
+        }
+
+        _lastEntryTime = now;
+    }
+
+    private int CalculateScore()
+    {
+        int baseScore = SelectedDifficulty switch
+        {
+            Difficulty.Easy => 1000,
+            Difficulty.Medium => 2000,
+            Difficulty.Hard => 3000,
+            _ => 1000
+        };
+
+        int parTime = SelectedDifficulty switch
+        {
+            Difficulty.Easy => 600,
+            Difficulty.Medium => 900,
+            Difficulty.Hard => 1500,
+            _ => 900
+        };
+
+        int actualTime = _timeElapsed + (int)_stopwatch.Elapsed.TotalSeconds;
+
+        int timeBonus = Math.Clamp((parTime - actualTime) * 2, -500, 1000);
+
+        int hintPenalty = _hintsUsed * 150;
+
+        double avgInterval = _entryIntervals.Count > 0 ? _entryIntervals.Average() : 0;
+        int speedBonus = Math.Clamp((int)((8.0 - avgInterval) * 40), 0, 500);
+
+        int finalScore = baseScore + timeBonus - hintPenalty + speedBonus;
+
+        return Math.Max(0, finalScore);
+    }
+
     private async void CheckForCompletion()
     {
         if (_completionNoticeShown)
@@ -387,11 +452,13 @@ public partial class SudokuViewModel : ObservableObject
 
         _completionNoticeShown = true;
         StopTimer();
+
+        int score = CalculateScore();
         SaveGame();
 
         if (ShowCompletionAndAskNewGame != null)
         {
-            bool wantsNewGame = await ShowCompletionAndAskNewGame();
+            bool wantsNewGame = await ShowCompletionAndAskNewGame(score);
 
             if (wantsNewGame)
             {

@@ -38,6 +38,11 @@ public partial class MainWindow : Window
         Content = sudokuView;
     }
 
+    private void Leaderboard_Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        Content = new LeaderboardView();
+    }
+
     private void Exit_Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         this.Close();

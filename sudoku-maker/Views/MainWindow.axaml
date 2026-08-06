@@ -15,11 +15,12 @@
             <Border CornerRadius="12" Background="{DynamicResource BgCard}"
                     BorderBrush="{DynamicResource BorderColor}" BorderThickness="1"
                     MinWidth="280" Padding="24" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Grid HorizontalAlignment="Center" VerticalAlignment="Center" RowDefinitions="Auto,Auto,Auto, Auto">
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Center" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
                     <Label Grid.Row="0" Content="Sudoku Maker" HorizontalAlignment="Center" Padding="10"> </Label>
                     <Button Grid.Row="1" Click="Create_New_Sudoku_Button_Click" Content="Create New Sudoku" HorizontalAlignment="Center" Margin="7,7,7,7" Width="150" HorizontalContentAlignment="Center" > </Button>
                     <Button Grid.Row="2" Click="Continue_Sudoku_Button_Click" Content="Continue Sudoku" HorizontalAlignment="Center" Margin="7,7,7,7" Width="150" HorizontalContentAlignment="Center"> </Button>
-                    <Button Grid.Row="3" Click="Exit_Button_Click" Content="Exit" HorizontalAlignment="Center" Margin="7,7,7,7" Width="150" HorizontalContentAlignment="Center"> </Button>
+                    <Button Grid.Row="3" Click="Leaderboard_Button_Click" Content="Leaderboard" HorizontalAlignment="Center" Margin="7,7,7,7" Width="150" HorizontalContentAlignment="Center"> </Button>
+                    <Button Grid.Row="4" Click="Exit_Button_Click" Content="Exit" HorizontalAlignment="Center" Margin="7,7,7,7" Width="150" HorizontalContentAlignment="Center"> </Button>
                 </Grid>
             </Border>
         </Grid>

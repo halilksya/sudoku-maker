@@ -110,14 +110,14 @@ public partial class SudokuView : UserControl
         return await difficultySelectWindow.ShowDialog<Difficulty?>(owner);
     }
 
-    private async Task<bool> ShowCompletionAndAskNewGameAsync()
+    private async Task<bool> ShowCompletionAndAskNewGameAsync(int score)
     {
         if (TopLevel.GetTopLevel(this) is not Window owner)
         {
             return false;
         }
 
-        var completionWindow = new CompletionWindow();
+        var completionWindow = new CompletionWindow(score);
         return await completionWindow.ShowDialog<bool>(owner);
     }
 
