@@ -21,7 +21,8 @@ public class LeaderboardEntryViewModel
         }
     }
 
-    public string DisplayText => $"{Rank}. {FormattedTime} - {Score} pts";
+    public int HintsUsed => SaveGame.HintsUsed;
+    public string DisplayText => $"{Rank}. {FormattedTime} - {Score} pts - {HintsUsed} hints";
 
     public LeaderboardEntryViewModel(SaveGame saveGame, int rank)
     {

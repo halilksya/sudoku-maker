@@ -107,7 +107,7 @@ public partial class SudokuViewModel : ObservableObject
                         TrackEntrySpeed(sender as SudokuCellViewModel);
                         HasUnsavedChanges = true;
                         ValidateConflicts();
-                        CheckForCompletion();
+                        Dispatcher.UIThread.Post(CheckForCompletion);
                     }
                 };
 
@@ -230,7 +230,7 @@ public partial class SudokuViewModel : ObservableObject
                         TrackEntrySpeed(sender as SudokuCellViewModel);
                         HasUnsavedChanges = true;
                         ValidateConflicts();
-                        CheckForCompletion();
+                        Dispatcher.UIThread.Post(CheckForCompletion);
                     }
                 };
 
@@ -360,7 +360,7 @@ public partial class SudokuViewModel : ObservableObject
             if(timeSpan.TotalHours >= 1)
             {
                 return timeSpan.ToString(@"hh\:mm\:ss");
-            }
+            }   
             else
             {
                 return timeSpan.ToString(@"mm\:ss");
@@ -438,32 +438,39 @@ public partial class SudokuViewModel : ObservableObject
 
     private async void CheckForCompletion()
     {
-        if (_completionNoticeShown)
+        try
         {
-            return;
-        }
-
-        bool isSolved = Cells.All(c => c.GetNumberValue() == c.SolutionValue);
-
-        if (!isSolved)
-        {
-            return;
-        }
-
-        _completionNoticeShown = true;
-        StopTimer();
-
-        int score = CalculateScore();
-        SaveGame();
-
-        if (ShowCompletionAndAskNewGame != null)
-        {
-            bool wantsNewGame = await ShowCompletionAndAskNewGame(score);
-
-            if (wantsNewGame)
+            if (_completionNoticeShown)
             {
-                CreateNewGame();
+                return;
             }
+
+            bool isSolved = Cells.All(c => c.GetNumberValue() == c.SolutionValue);
+
+            if (!isSolved)
+            {
+                return;
+            }
+
+            _completionNoticeShown = true;
+            StopTimer();
+
+            int score = CalculateScore();
+            SaveGame();
+
+            if (ShowCompletionAndAskNewGame != null)
+            {
+                bool wantsNewGame = await ShowCompletionAndAskNewGame(score);
+
+                if (wantsNewGame)
+                {
+                    CreateNewGame();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"CheckForCompletion hatası: {ex}");
         }
     }
 }
