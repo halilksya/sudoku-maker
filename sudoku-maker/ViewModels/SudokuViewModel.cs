@@ -24,6 +24,9 @@ public partial class SudokuViewModel : ObservableObject
     private DateTime? _lastEntryTime;
     private readonly List<double> _entryIntervals = new();
 
+    private bool _isApplyingHistory;
+    private readonly Stack<(SudokuCellViewModel Cell, string OldValue, string NewValue)> _undoStack = new();
+    private readonly Stack<(SudokuCellViewModel Cell, string OldValue, string NewValue)> _redoStack = new();
 
     [ObservableProperty]
     private ObservableCollection<SudokuCellViewModel> _cells = new();
@@ -36,6 +39,18 @@ public partial class SudokuViewModel : ObservableObject
 
     [ObservableProperty]
     private bool hasUnsavedChanges;
+
+    [ObservableProperty]
+    private SudokuCellViewModel? selectedCell;
+
+    [ObservableProperty]
+    private bool isNoteMode;
+
+    [ObservableProperty]
+    private bool canUndo;
+
+    [ObservableProperty]
+    private bool canRedo;
 
     public Action? OpenSavedGamesRequested { get; set; }
     public Func<Task<SavePromptResult>>? AskToSaveChanges { get; set; }
@@ -104,6 +119,7 @@ public partial class SudokuViewModel : ObservableObject
                 {
                     if (args.PropertyName == nameof(SudokuCellViewModel.Value))
                     {
+                        RecordHistory(sender as SudokuCellViewModel);
                         TrackEntrySpeed(sender as SudokuCellViewModel);
                         HasUnsavedChanges = true;
                         ValidateConflicts();
@@ -120,6 +136,11 @@ public partial class SudokuViewModel : ObservableObject
         _hintsUsed = 0;
         _entryIntervals.Clear();
         _lastEntryTime = null;
+        _undoStack.Clear();
+        _redoStack.Clear();
+        UpdateUndoRedoState();
+        SelectedCell = null;
+        IsNoteMode = false;
         CurrentSaveId = null;
         HasUnsavedChanges = true;
         StartTimer(0);
@@ -227,6 +248,7 @@ public partial class SudokuViewModel : ObservableObject
                 {
                     if (args.PropertyName == nameof(SudokuCellViewModel.Value))
                     {
+                        RecordHistory(sender as SudokuCellViewModel);
                         TrackEntrySpeed(sender as SudokuCellViewModel);
                         HasUnsavedChanges = true;
                         ValidateConflicts();
@@ -242,6 +264,11 @@ public partial class SudokuViewModel : ObservableObject
         _hintsUsed = saveGame.HintsUsed;
         _entryIntervals.Clear();
         _lastEntryTime = null;
+        _undoStack.Clear();
+        _redoStack.Clear();
+        UpdateUndoRedoState();
+        SelectedCell = null;
+        IsNoteMode = false;
         HasUnsavedChanges = false;
         StartTimer(saveGame.TimeElapsed);
 
@@ -318,7 +345,12 @@ public partial class SudokuViewModel : ObservableObject
         foreach (var cell in Cells)
         {
             cell.ClearUserValue();
+            cell.ClearNotes();
         }
+
+        _undoStack.Clear();
+        _redoStack.Clear();
+        UpdateUndoRedoState();
 
         HasUnsavedChanges = true;
     }
@@ -348,6 +380,138 @@ public partial class SudokuViewModel : ObservableObject
 
         _hintsUsed++;
         HasUnsavedChanges = true;
+    }
+
+    [RelayCommand]
+    private void ToggleNoteMode()
+    {
+        IsNoteMode = !IsNoteMode;
+    }
+
+    [RelayCommand]
+    private void Undo()
+    {
+        if (_undoStack.Count == 0)
+        {
+            return;
+        }
+
+        var change = _undoStack.Pop();
+
+        _isApplyingHistory = true;
+        change.Cell.Value = change.OldValue;
+        _isApplyingHistory = false;
+
+        _redoStack.Push(change);
+        UpdateUndoRedoState();
+
+        ValidateConflicts();
+        HasUnsavedChanges = true;
+    }
+
+    [RelayCommand]
+    private void Redo()
+    {
+        if (_redoStack.Count == 0)
+        {
+            return;
+        }
+
+        var change = _redoStack.Pop();
+
+        _isApplyingHistory = true;
+        change.Cell.Value = change.NewValue;
+        _isApplyingHistory = false;
+
+        _undoStack.Push(change);
+        UpdateUndoRedoState();
+
+        ValidateConflicts();
+        HasUnsavedChanges = true;
+    }
+
+    private void RecordHistory(SudokuCellViewModel? cell)
+    {
+        if (cell == null || _isApplyingHistory)
+        {
+            return;
+        }
+
+        _undoStack.Push((cell, cell.PreviousValue, cell.Value));
+        _redoStack.Clear();
+        UpdateUndoRedoState();
+    }
+
+    private void UpdateUndoRedoState()
+    {
+        CanUndo = _undoStack.Count > 0;
+        CanRedo = _redoStack.Count > 0;
+    }
+
+    public void SelectCell(SudokuCellViewModel cell)
+    {
+        if (SelectedCell != null)
+        {
+            SelectedCell.IsSelected = false;
+        }
+
+        SelectedCell = cell;
+        cell.IsSelected = true;
+    }
+
+    public void MoveSelection(int rowDelta, int columnDelta)
+    {
+        if (SelectedCell == null)
+        {
+            var first = Cells.FirstOrDefault();
+
+            if (first != null)
+            {
+                SelectCell(first);
+            }
+
+            return;
+        }
+
+        int newRow = Math.Clamp(SelectedCell.Row + rowDelta, 0, SudokuBoard.Size - 1);
+        int newColumn = Math.Clamp(SelectedCell.Column + columnDelta, 0, SudokuBoard.Size - 1);
+
+        var target = Cells.FirstOrDefault(c => c.Row == newRow && c.Column == newColumn);
+
+        if (target != null)
+        {
+            SelectCell(target);
+        }
+    }
+
+    public void EnterDigit(int digit)
+    {
+        if (SelectedCell == null || SelectedCell.IsGiven)
+        {
+            return;
+        }
+
+        if (IsNoteMode)
+        {
+            SelectedCell.ToggleNote(digit);
+        }
+        else
+        {
+            SelectedCell.Value = digit.ToString();
+        }
+
+        HasUnsavedChanges = true;
+    }
+
+    public void ClearSelectedCell()
+    {
+        if (SelectedCell == null || SelectedCell.IsGiven)
+        {
+            return;
+        }
+
+        SelectedCell.ClearUserValue();
+        SelectedCell.ClearNotes();
     }
 
     public string FormattedElaspedTime
@@ -470,7 +634,7 @@ public partial class SudokuViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"CheckForCompletion hatası: {ex}");
+            Console.WriteLine($"CheckForCompletion hatası: {ex}");
         }
     }
 }

@@ -7,7 +7,9 @@
              d:DesignWidth="900"
              d:DesignHeight="700"
              x:Class="sudoku_maker.Views.SudokuView"
-             x:DataType="vm:SudokuViewModel">
+             x:DataType="vm:SudokuViewModel"
+             Focusable="True"
+             KeyDown="SudokuView_KeyDown">
 
     <UserControl.Styles>
 
@@ -16,33 +18,44 @@
             <Setter Property="ClipToBounds" Value="True"/>
         </Style>
 
-        <Style Selector="TextBox.cell">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="0"/>
-            <Setter Property="Margin" Value="0"/>
-            <Setter Property="MinWidth" Value="0"/>
-            <Setter Property="MinHeight" Value="0"/>
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
-            <Setter Property="VerticalAlignment" Value="Stretch"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="FontSize" Value="18"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="MaxLength" Value="1"/>
+        <Style Selector="Border.cell-given">
+            <Setter Property="Background" Value="{DynamicResource BgPage}"/>
         </Style>
 
-        <Style Selector="TextBox.cell-given">
-            <Setter Property="Background" Value="{DynamicResource BgPage}"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-        </Style>
-        
-        <Style Selector="TextBox.cell-error">
+        <Style Selector="Border.cell-error">
             <Setter Property="Background" Value="{DynamicResource ErrorBg}"/>
         </Style>
-        
-        <Style Selector="TextBox.cell-conflict">
+
+        <Style Selector="Border.cell-conflict">
             <Setter Property="Background" Value="#F5D9A8"/>
+        </Style>
+
+        <Style Selector="Border.cell-selected">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+        </Style>
+
+        <Style Selector="TextBlock.cell-value">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style Selector="TextBlock.cell-value-given">
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
+        <Style Selector="TextBlock.note-digit">
+            <Setter Property="FontSize" Value="9"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style Selector="Button.tool-active">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
+            <Setter Property="BorderThickness" Value="2"/>
         </Style>
 
     </UserControl.Styles>
@@ -63,7 +76,7 @@
                 </Button>
 
                 <TextBlock Text="Sudoku Maker" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="18,0,40,0"/>
-                
+
                 <Image Source="{SvgImage /Assets/Images/Clock.svg}" Width="40" Height="40"/>
 
                 <TextBlock Text="{Binding FormattedElaspedTime}" FontSize="18" VerticalAlignment="Center" Margin="24,0,0,0"/>
@@ -82,13 +95,31 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="vm:SudokuCellViewModel">
-                                        <Border Classes="cell-frame" Width="56" Height="56">
-                                            <TextBox Classes="cell"
-                                                    Text="{Binding Value, Mode=TwoWay}"
-                                                    IsReadOnly="{Binding ReadOnly}"
-                                                    Classes.cell-error="{Binding HasError}"
-                                                    Classes.cell-conflict="{Binding HasConflict}"
-                                                    Classes.cell-given="{Binding IsGiven}"/>
+                                        <Border Classes="cell-frame" Width="56" Height="56"
+                                                Classes.cell-error="{Binding HasError}"
+                                                Classes.cell-conflict="{Binding HasConflict}"
+                                                Classes.cell-given="{Binding IsGiven}"
+                                                Classes.cell-selected="{Binding IsSelected}"
+                                                PointerPressed="Cell_PointerPressed">
+                                            <Grid>
+                                                <TextBlock Text="{Binding Value}"
+                                                           Classes="cell-value"
+                                                           Classes.cell-value-given="{Binding IsGiven}"
+                                                           IsVisible="{Binding !ShowNotes}"/>
+
+                                                <ItemsControl ItemsSource="{Binding Notes}" IsVisible="{Binding ShowNotes}">
+                                                    <ItemsControl.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <UniformGrid Rows="3" Columns="3"/>
+                                                        </ItemsPanelTemplate>
+                                                    </ItemsControl.ItemsPanel>
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate x:DataType="vm:NoteDigitViewModel">
+                                                            <TextBlock Text="{Binding DisplayText}" Classes="note-digit"/>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </Grid>
                                         </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -137,6 +168,16 @@
                 <Button Width="40" Height="40" Padding="0" Command="{Binding ResetCommand}">
                     <Image Source="{SvgImage /Assets/Images/Reset_Button.svg}"/>
                 </Button>
+
+                <Border Height="1" Background="{DynamicResource BorderColor}" Margin="0,6"/>
+
+                <Button Content="Notes" HorizontalContentAlignment="Center"
+                        Command="{Binding ToggleNoteModeCommand}"
+                        Classes.tool-active="{Binding IsNoteMode}"/>
+                <Button Content="Undo" HorizontalContentAlignment="Center"
+                        Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndo}"/>
+                <Button Content="Redo" HorizontalContentAlignment="Center"
+                        Command="{Binding RedoCommand}" IsEnabled="{Binding CanRedo}"/>
             </StackPanel>
         </Grid>
     </Grid>

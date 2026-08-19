@@ -1,4 +1,7 @@
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using System.Threading.Tasks;
 using sudoku_maker.ViewModels;
@@ -21,8 +24,10 @@ public partial class SudokuView : UserControl
         viewModel.OpenSavedGamesRequested = OpenSavedGames;
         viewModel.AskToSaveChanges = AskSaveChangesAsync;
         viewModel.AskForDifficulty = AskDifficultyAsync;
-        viewModel.ShowCompletionAndAskNewGame =ShowCompletionAndAskNewGameAsync;
+        viewModel.ShowCompletionAndAskNewGame = ShowCompletionAndAskNewGameAsync;
         DataContext = viewModel;
+
+        Loaded += (sender, args) => Focus();
     }
 
     public void LoadSaveGame(SaveGame saveGame)
@@ -88,9 +93,26 @@ public partial class SudokuView : UserControl
         LoadSaveGame(saveGame);
     }
 
+    private Window? GetOwnerWindow()
+    {
+        if (TopLevel.GetTopLevel(this) is Window topLevelOwner)
+        {
+            return topLevelOwner;
+        }
+
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            return desktop.MainWindow;
+        }
+
+        return null;
+    }
+
     private async Task<SavePromptResult> AskSaveChangesAsync()
     {
-        if (TopLevel.GetTopLevel(this) is not Window owner)
+        var owner = GetOwnerWindow();
+
+        if (owner == null)
         {
             return SavePromptResult.Cancel;
         }
@@ -101,7 +123,9 @@ public partial class SudokuView : UserControl
 
     private async Task<Difficulty?> AskDifficultyAsync()
     {
-        if (TopLevel.GetTopLevel(this) is not Window owner)
+        var owner = GetOwnerWindow();
+
+        if (owner == null)
         {
             return null;
         }
@@ -112,13 +136,31 @@ public partial class SudokuView : UserControl
 
     private async Task<bool> ShowCompletionAndAskNewGameAsync(int score)
     {
-        if (TopLevel.GetTopLevel(this) is not Window owner)
+        var completionWindow = new CompletionWindow(score);
+
+        try
         {
+            var owner = GetOwnerWindow();
+            if (owner != null)
+            {
+                return await completionWindow.ShowDialog<bool>(owner);
+            }
+
+            completionWindow.Show();
             return false;
         }
+        catch
+        {
+            try
+            {
+                completionWindow.Show();
+            }
+            catch
+            {
+            }
 
-        var completionWindow = new CompletionWindow(score);
-        return await completionWindow.ShowDialog<bool>(owner);
+            return false;
+        }
     }
 
     private void Back_Button_Click(object? sender, RoutedEventArgs e)
@@ -131,5 +173,61 @@ public partial class SudokuView : UserControl
 
             currentWindow.Close();
         }
+    }
+
+    private void Cell_PointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (sender is Border border &&
+            border.DataContext is SudokuCellViewModel cell &&
+            DataContext is SudokuViewModel viewModel)
+        {
+            viewModel.SelectCell(cell);
+            Focus();
+        }
+    }
+
+    private void SudokuView_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (DataContext is not SudokuViewModel viewModel)
+        {
+            return;
+        }
+
+        switch (e.Key)
+        {
+            case Key.D1: case Key.NumPad1: viewModel.EnterDigit(1); break;
+            case Key.D2: case Key.NumPad2: viewModel.EnterDigit(2); break;
+            case Key.D3: case Key.NumPad3: viewModel.EnterDigit(3); break;
+            case Key.D4: case Key.NumPad4: viewModel.EnterDigit(4); break;
+            case Key.D5: case Key.NumPad5: viewModel.EnterDigit(5); break;
+            case Key.D6: case Key.NumPad6: viewModel.EnterDigit(6); break;
+            case Key.D7: case Key.NumPad7: viewModel.EnterDigit(7); break;
+            case Key.D8: case Key.NumPad8: viewModel.EnterDigit(8); break;
+            case Key.D9: case Key.NumPad9: viewModel.EnterDigit(9); break;
+            case Key.Delete:
+            case Key.Back:
+                viewModel.ClearSelectedCell();
+                break;
+            case Key.Up: viewModel.MoveSelection(-1, 0); break;
+            case Key.Down: viewModel.MoveSelection(1, 0); break;
+            case Key.Left: viewModel.MoveSelection(0, -1); break;
+            case Key.Right: viewModel.MoveSelection(0, 1); break;
+            case Key.N:
+                viewModel.ToggleNoteModeCommand.Execute(null);
+                break;
+            case Key.Z when e.KeyModifiers.HasFlag(KeyModifiers.Control) && e.KeyModifiers.HasFlag(KeyModifiers.Shift):
+                viewModel.RedoCommand.Execute(null);
+                break;
+            case Key.Z when e.KeyModifiers.HasFlag(KeyModifiers.Control):
+                viewModel.UndoCommand.Execute(null);
+                break;
+            case Key.Y when e.KeyModifiers.HasFlag(KeyModifiers.Control):
+                viewModel.RedoCommand.Execute(null);
+                break;
+            default:
+                return;
+        }
+
+        e.Handled = true;
     }
 }

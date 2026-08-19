@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Avalonia;
 
@@ -14,7 +16,15 @@ public partial class SudokuCellViewModel : ObservableObject
 
     public bool BlockRightEdge => (Column + 1) % 3 == 0 && Column != 8;
     public bool BlockBottomEdge => (Row + 1) % 3 == 0 && Row != 8;
-    
+
+    public string PreviousValue { get; private set; } = string.Empty;
+
+    public ObservableCollection<NoteDigitViewModel> Notes { get; } =
+        new(Enumerable.Range(1, 9).Select(d => new NoteDigitViewModel(d)));
+
+    public bool HasNotes => Notes.Any(n => n.IsSet);
+    public bool ShowNotes => string.IsNullOrEmpty(Value) && !IsGiven && HasNotes;
+
     [ObservableProperty]
     private string _value = string.Empty;
 
@@ -24,6 +34,9 @@ public partial class SudokuCellViewModel : ObservableObject
     [ObservableProperty]
     private bool hasConflict;
 
+    [ObservableProperty]
+    private bool isSelected;
+
     public SudokuCellViewModel(int row, int column, int value, int solutionValue, bool isGiven)
     {
         Row = row;
@@ -31,6 +44,11 @@ public partial class SudokuCellViewModel : ObservableObject
         SolutionValue = solutionValue;
         IsGiven = isGiven;
         this._value = value == 0 ? string.Empty : value.ToString();
+    }
+
+    partial void OnValueChanging(string value)
+    {
+        PreviousValue = Value;
     }
 
     partial void OnValueChanged(string value)
@@ -43,6 +61,7 @@ public partial class SudokuCellViewModel : ObservableObject
         if (string.IsNullOrEmpty(value))
         {
             HasError = false;
+            OnPropertyChanged(nameof(ShowNotes));
             return;
         }
 
@@ -53,7 +72,8 @@ public partial class SudokuCellViewModel : ObservableObject
         }
 
         HasError = false;
-        
+        ClearNotes();
+        OnPropertyChanged(nameof(ShowNotes));
     }
 
     public int GetNumberValue()
@@ -91,5 +111,33 @@ public partial class SudokuCellViewModel : ObservableObject
         int currentValue = GetNumberValue();
 
         return currentValue == 0 || currentValue == SolutionValue;
+    }
+
+    public void ToggleNote(int digit)
+    {
+        if (IsGiven || !string.IsNullOrEmpty(Value))
+        {
+            return;
+        }
+
+        var note = Notes.FirstOrDefault(n => n.Digit == digit);
+
+        if (note != null)
+        {
+            note.IsSet = !note.IsSet;
+            OnPropertyChanged(nameof(HasNotes));
+            OnPropertyChanged(nameof(ShowNotes));
+        }
+    }
+
+    public void ClearNotes()
+    {
+        foreach (var note in Notes)
+        {
+            note.IsSet = false;
+        }
+
+        OnPropertyChanged(nameof(HasNotes));
+        OnPropertyChanged(nameof(ShowNotes));
     }
 }
