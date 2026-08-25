@@ -1,6 +1,8 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:sudoku_maker.ViewModels"
         x:Class="sudoku_maker.Views.CompletionWindow"
+        x:DataType="vm:CompletionWindowViewModel"
         Title="Congratulations"
         Width="420" Height="240"
         CanResize="False"
@@ -14,15 +16,15 @@
                 <TextBlock Text="Congratulations, you solved the puzzle!"
                            FontSize="17" FontWeight="Bold" TextAlignment="Center"
                            TextWrapping="Wrap" HorizontalAlignment="Center"/>
-                <TextBlock x:Name="ScoreTextBlock" Text="Score: 0"
-                            FontSize="16" FontWeight="SemiBold" TextAlignment="Center"
-                            HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding ScoreText}"
+                           FontSize="16" FontWeight="SemiBold" TextAlignment="Center"
+                           HorizontalAlignment="Center"/>
                 <TextBlock Text="Would you like to start a new puzzle?"
                            FontSize="14" TextAlignment="Center" TextWrapping="Wrap"
                            HorizontalAlignment="Center"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="12">
-                    <Button Name="YesButton" Content="Yes, new puzzle" Width="140" Click="YesButton_Click"/>
-                    <Button Name="NoButton" Content="No, stay here" Width="140" Click="NoButton_Click"/>
+                    <Button Content="Yes, new puzzle" Width="140" Click="YesButton_Click"/>
+                    <Button Content="No, stay here" Width="140" Click="NoButton_Click"/>
                 </StackPanel>
             </StackPanel>
         </Border>

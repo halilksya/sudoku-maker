@@ -4,8 +4,10 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using System.Threading.Tasks;
+using Avalonia.Platform.Storage;
 using sudoku_maker.ViewModels;
 using sudoku_maker.Models;
+using sudoku_maker.Services;
 
 namespace sudoku_maker.Views;
 
@@ -173,6 +175,40 @@ public partial class SudokuView : UserControl
 
             currentWindow.Close();
         }
+    }
+
+    private async void ExportPdf_Button_Click(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not SudokuViewModel viewModel)
+        {
+            return;
+        }
+
+        var topLevel = TopLevel.GetTopLevel(this);
+
+        if (topLevel?.StorageProvider == null)
+        {
+            return;
+        }
+
+        var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Save Sudoku as PDF",
+            SuggestedFileName = "sudoku",
+            DefaultExtension = "pdf",
+            FileTypeChoices = new[]
+            {
+                new FilePickerFileType("PDF") { Patterns = new[] { "*.pdf" } }
+            }
+        });
+
+        if (file == null)
+        {
+            return;
+        }
+
+        var pdfService = new PdfExportService();
+        pdfService.ExportToPdf(viewModel.Cells, file.Path.LocalPath, "Sudoku Maker");
     }
 
     private void Cell_PointerPressed(object? sender, PointerPressedEventArgs e)

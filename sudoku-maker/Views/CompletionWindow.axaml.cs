@@ -1,13 +1,12 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using sudoku_maker.ViewModels;
 
 namespace sudoku_maker.Views;
 
 public partial class CompletionWindow : Window
 {
-    public bool Result { get; private set; }
-
     public CompletionWindow() : this(0)
     {
     }
@@ -15,10 +14,7 @@ public partial class CompletionWindow : Window
     public CompletionWindow(int score)
     {
         InitializeComponent();
-        ScoreTextBlock.Text = $"Score: {score}";
-        WindowStartupLocation = WindowStartupLocation.CenterScreen;
-        CanResize = false;
-        ShowInTaskbar = true;
+        DataContext = new CompletionWindowViewModel(score);
     }
 
     private void InitializeComponent()
@@ -26,15 +22,6 @@ public partial class CompletionWindow : Window
         AvaloniaXamlLoader.Load(this);
     }
 
-    private void YesButton_Click(object? sender, RoutedEventArgs e)
-    {
-        Result = true;
-        Close();
-    }
-
-    private void NoButton_Click(object? sender, RoutedEventArgs e)
-    {
-        Result = false;
-        Close();
-    }
+    private void YesButton_Click(object? sender, RoutedEventArgs e) => Close(true);
+    private void NoButton_Click(object? sender, RoutedEventArgs e) => Close(false);
 }

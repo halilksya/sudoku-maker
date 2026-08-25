@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using sudoku_maker.Models;
 using sudoku_maker.Views;
 
@@ -46,5 +47,15 @@ public partial class MainWindow : Window
     private void Exit_Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         this.Close();
+    }
+
+    private void EnglishButton_Click(object? sender, RoutedEventArgs e)
+    {
+        sudoku_maker.Services.LocalizationService.Instance.CurrentLanguage = sudoku_maker.Services.AppLanguage.English;
+    }
+
+    private void TurkishButton_Click(object? sender, RoutedEventArgs e)
+    {
+        sudoku_maker.Services.LocalizationService.Instance.CurrentLanguage = sudoku_maker.Services.AppLanguage.Turkish;
     }
 }

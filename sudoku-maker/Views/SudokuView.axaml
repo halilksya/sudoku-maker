@@ -178,6 +178,8 @@
                         Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndo}"/>
                 <Button Content="Redo" HorizontalContentAlignment="Center"
                         Command="{Binding RedoCommand}" IsEnabled="{Binding CanRedo}"/>
+                <Border Height="1" Background="{DynamicResource BorderColor}" Margin="0,6"/>
+                <Button Content="Export PDF" HorizontalContentAlignment="Center" Click="ExportPdf_Button_Click"/>
             </StackPanel>
         </Grid>
     </Grid>
