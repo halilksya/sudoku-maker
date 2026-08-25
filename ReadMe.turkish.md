@@ -1,5 +1,7 @@
 # Sudoku Maker
 
+[English](ReadMe.md) | **Türkçe**
+
 Sudoku Maker, Avalonia UI ve .NET 10 ile geliştirilmiş, Windows ve macOS için bir masaüstü Sudoku uygulaması. Her oyun, sabit bir bulmaca havuzundan çekilmek yerine anında üretiliyor, yani hiçbir iki oyun birbirinin aynısı değil. Fareyle ya da tamamen klavyeyle oynayabilir, bir hücre üzerinde düşünürken kalem notu (aday rakam) alabilir, bir bulmacayı yarıda bırakıp daha sonra kaldığın yerden devam edebilir ve çözdüklerini zorluk bazında bir liderlik tablosunda geçmiş oyunlarınla kıyaslayabilirsin.
 
 ## İçindekiler
