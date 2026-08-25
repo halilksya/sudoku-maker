@@ -45,7 +45,14 @@ public class PdfExportService
                                 var cell = cellList.First(c => c.Row == row && c.Column == col);
                                 string text = cell.IsGiven ? cell.SolutionValue.ToString() : string.Empty;
 
-                                table.Cell().Border(1).BorderColor(Colors.Grey.Darken2)
+                                float left = col == 0 ? 2f : 1f;
+                                float top = row == 0 ? 2f : 1f;
+                                float right = (col + 1) % 3 == 0 ? 3f : 1f;
+                                float bottom = (row + 1) % 3 == 0 ? 3f : 1f;
+
+                                table.Cell()
+                                    .BorderLeft(left).BorderTop(top).BorderRight(right).BorderBottom(bottom)
+                                    .BorderColor(Colors.Grey.Darken4)
                                     .Height(45)
                                     .AlignCenter().AlignMiddle()
                                     .Text(text).FontSize(18).Bold();

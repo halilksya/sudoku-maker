@@ -1,7 +1,8 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:loc="clr-namespace:sudoku_maker.Localization"
         x:Class="sudoku_maker.Views.SavePromptWindow"
-        Title="Save Changes"
+        Title="{loc:Loc SaveChanges}"
         Width="560" Height="260"
         CanResize="False"
         WindowStartupLocation="CenterOwner">
@@ -11,13 +12,13 @@
                 Width="500" Padding="20" CornerRadius="10"
                 HorizontalAlignment="Center" VerticalAlignment="Center">
             <StackPanel Spacing="16">
-                <TextBlock Text="You have unsaved changes. Do you want to save them?"
+                <TextBlock Text="{loc:Loc UnsavedChangesPrompt}"
                            FontSize="15" TextAlignment="Center" TextWrapping="Wrap"
                            HorizontalAlignment="Center"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="12">
-                    <Button Name="SaveButton" Content="Save" Width="120" Click="SaveButton_Click"/>
-                    <Button Name="DontSaveButton" Content="Don't Save" Width="120" Click="DontSaveButton_Click"/>
-                    <Button Name="CancelButton" Content="Cancel" Width="120" Click="CancelButton_Click"/>
+                    <Button Name="SaveButton" Content="{loc:Loc Save}" Width="120" Click="SaveButton_Click"/>
+                    <Button Name="DontSaveButton" Content="{loc:Loc DontSave}" Width="120" Click="DontSaveButton_Click"/>
+                    <Button Name="CancelButton" Content="{loc:Loc Cancel}" Width="120" Click="CancelButton_Click"/>
                 </StackPanel>
             </StackPanel>
         </Border>

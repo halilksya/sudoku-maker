@@ -1,5 +1,6 @@
 using System;
 using sudoku_maker.Models;
+using sudoku_maker.Services;
 
 namespace sudoku_maker.ViewModels;
 
@@ -22,7 +23,9 @@ public class LeaderboardEntryViewModel
     }
 
     public int HintsUsed => SaveGame.HintsUsed;
-    public string DisplayText => $"{Rank}. {FormattedTime} - {Score} pts - {HintsUsed} hints";
+
+    public string DisplayText =>
+        $"{Rank}. {FormattedTime} - {Score} {LocalizationService.Instance.Get("Points")} - {HintsUsed} {LocalizationService.Instance.Get("Hints")}";
 
     public LeaderboardEntryViewModel(SaveGame saveGame, int rank)
     {

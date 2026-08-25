@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:sudoku_maker.ViewModels"
+             xmlns:loc="clr-namespace:sudoku_maker.Localization"
              mc:Ignorable="d"
              d:DesignWidth="900"
              d:DesignHeight="700"
@@ -75,7 +76,7 @@
                     <Image Source="{SvgImage /Assets/Images/New_Button.svg}"/>
                 </Button>
 
-                <TextBlock Text="Sudoku Maker" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="18,0,40,0"/>
+                <TextBlock Text="{loc:Loc SudokuMakerTitle}" FontSize="20" FontWeight="Bold" VerticalAlignment="Center" Margin="18,0,40,0"/>
 
                 <Image Source="{SvgImage /Assets/Images/Clock.svg}" Width="40" Height="40"/>
 
@@ -171,15 +172,15 @@
 
                 <Border Height="1" Background="{DynamicResource BorderColor}" Margin="0,6"/>
 
-                <Button Content="Notes" HorizontalContentAlignment="Center"
+                <Button Content="{loc:Loc Notes}" HorizontalContentAlignment="Center"
                         Command="{Binding ToggleNoteModeCommand}"
                         Classes.tool-active="{Binding IsNoteMode}"/>
-                <Button Content="Undo" HorizontalContentAlignment="Center"
+                <Button Content="{loc:Loc Undo}" HorizontalContentAlignment="Center"
                         Command="{Binding UndoCommand}" IsEnabled="{Binding CanUndo}"/>
-                <Button Content="Redo" HorizontalContentAlignment="Center"
+                <Button Content="{loc:Loc Redo}" HorizontalContentAlignment="Center"
                         Command="{Binding RedoCommand}" IsEnabled="{Binding CanRedo}"/>
                 <Border Height="1" Background="{DynamicResource BorderColor}" Margin="0,6"/>
-                <Button Content="Export PDF" HorizontalContentAlignment="Center" Click="ExportPdf_Button_Click"/>
+                <Button Content="{loc:Loc ExportPdf}" HorizontalContentAlignment="Center" Click="ExportPdf_Button_Click"/>
             </StackPanel>
         </Grid>
     </Grid>

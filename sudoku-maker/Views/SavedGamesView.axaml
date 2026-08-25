@@ -3,6 +3,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="clr-namespace:sudoku_maker.ViewModels"
+    xmlns:loc="clr-namespace:sudoku_maker.Localization"
     x:DataType="vm:SavedGameViewModel">
 
     <UserControl.Styles>
@@ -13,7 +14,7 @@
 
     <Grid Background="{DynamicResource BgPage}">
         <StackPanel Margin="20" Spacing="12" HorizontalAlignment="Center">
-            <TextBlock Text="Saved Games" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
+            <TextBlock Text="{loc:Loc SavedGames}" FontSize="22" FontWeight="Bold" HorizontalAlignment="Center"/>
 
             <Border Background="{DynamicResource BgCard}" BorderBrush="{DynamicResource BorderColor}"
                     BorderThickness="1" CornerRadius="8" Width="360">
@@ -28,9 +29,9 @@
             </Border>
 
             <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
-                <Button Content="Open" Width="100" Command="{Binding OpenSelectedCommand}"/>
-                <Button Content="Delete" Width="100" Command="{Binding DeleteSelectedCommand}"/>
-                <Button Content="Cancel" Width="100" Command="{Binding CancelCommand}"/>
+                <Button Content="{loc:Loc Open}" Width="100" Command="{Binding OpenSelectedCommand}"/>
+                <Button Content="{loc:Loc Delete}" Width="100" Command="{Binding DeleteSelectedCommand}"/>
+                <Button Content="{loc:Loc Cancel}" Width="100" Command="{Binding CancelCommand}"/>
             </StackPanel>
         </StackPanel>
     </Grid>

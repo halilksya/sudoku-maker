@@ -1,3 +1,5 @@
+using sudoku_maker.Services;
+
 namespace sudoku_maker.ViewModels;
 
 public class CompletionWindowViewModel
@@ -6,6 +8,6 @@ public class CompletionWindowViewModel
 
     public CompletionWindowViewModel(int score)
     {
-        ScoreText = $"Score: {score}";
+        ScoreText = $"{LocalizationService.Instance.Get("Score")}: {score}";
     }
 }

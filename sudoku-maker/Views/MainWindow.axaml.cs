@@ -12,7 +12,7 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
-    private async void Create_New_Sudoku_Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private async void Create_New_Sudoku_Button_Click(object? sender, RoutedEventArgs e)
     {
         var difficultySelectWindow = new DifficultySelectWindow();
         var selectedDifficulty = await difficultySelectWindow.ShowDialog<Difficulty?>(this);
@@ -25,7 +25,7 @@ public partial class MainWindow : Window
         Content = new SudokuView(selectedDifficulty.Value);
     }
 
-    private async void Continue_Sudoku_Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private async void Continue_Sudoku_Button_Click(object? sender, RoutedEventArgs e)
     {
         var saveGame = await SudokuView.PickSavedGameAsync(this);
 
@@ -39,23 +39,22 @@ public partial class MainWindow : Window
         Content = sudokuView;
     }
 
-    private void Leaderboard_Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void Leaderboard_Button_Click(object? sender, RoutedEventArgs e)
     {
         Content = new LeaderboardView();
     }
 
-    private void Exit_Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void LanguageButton_Click(object? sender, RoutedEventArgs e)
+    {
+        var service = sudoku_maker.Services.LocalizationService.Instance;
+
+        service.CurrentLanguage = service.CurrentLanguage == sudoku_maker.Services.AppLanguage.English
+            ? sudoku_maker.Services.AppLanguage.Turkish
+            : sudoku_maker.Services.AppLanguage.English;
+    }
+
+    private void Exit_Button_Click(object? sender, RoutedEventArgs e)
     {
         this.Close();
-    }
-
-    private void EnglishButton_Click(object? sender, RoutedEventArgs e)
-    {
-        sudoku_maker.Services.LocalizationService.Instance.CurrentLanguage = sudoku_maker.Services.AppLanguage.English;
-    }
-
-    private void TurkishButton_Click(object? sender, RoutedEventArgs e)
-    {
-        sudoku_maker.Services.LocalizationService.Instance.CurrentLanguage = sudoku_maker.Services.AppLanguage.Turkish;
     }
 }
